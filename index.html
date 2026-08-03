@@ -127,7 +127,7 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
 body{
   background:var(--bg);color:var(--txt);
-  font:400 16px/1.55 var(--sans);
+  font:400 15px/1.6 var(--sans);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
 }
@@ -202,7 +202,7 @@ main,header,footer{position:relative;z-index:1}
 /* ============================================================
    HERO
    ============================================================ */
-.hero{padding:96px 0 0;text-align:center;position:relative}
+.hero{padding:56px 0 0;text-align:center;position:relative}
 .hero::before{
   content:"";position:absolute;left:50%;top:-140px;translate:-50% 0;
   width:min(900px,100%);height:520px;pointer-events:none;
@@ -215,15 +215,15 @@ main,header,footer{position:relative;z-index:1}
   padding:7px 13px;margin-bottom:28px;background:var(--bg-2);
 }
 h1{
-  font-size:clamp(34px,6vw,70px);
+  font-size:clamp(27px,3.3vw,42px);
   /* Plex Sans runs wider than Inter, so the measure is wider and the
      tracking looser than the values that suited the old stack. */
-  font-weight:600;line-height:1.05;letter-spacing:-.025em;
-  max-width:19ch;margin:0 auto;text-wrap:balance;
+  font-weight:600;line-height:1.12;letter-spacing:-.02em;
+  max-width:25ch;margin:0 auto;text-wrap:balance;
 }
 h1 em{font-style:normal;color:var(--dim-2)}
 .lede{
-  color:var(--dim);font-size:clamp(15.5px,1.5vw,18px);line-height:1.6;
+  color:var(--dim);font-size:15.5px;line-height:1.62;
   max-width:60ch;margin:22px auto 0;text-wrap:pretty;
 }
 .hero-cta{display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap}
@@ -237,7 +237,7 @@ h1 em{font-style:normal;color:var(--dim-2)}
 .pstat{padding:26px 24px 24px;border-left:1px solid var(--line);position:relative}
 .pstat:first-child{border-left:0}
 .pstat .k{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim-2);display:block;margin-bottom:12px}
-.pstat .v{font:600 26px/1 var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pstat .v{font:600 21px/1 var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .pstat .v small{font-size:13px;font-weight:500;color:var(--dim);margin-left:5px;letter-spacing:0}
 .pstat.hot .v{color:var(--accent)}
 .pstat .bar{position:absolute;left:-1px;top:26px;width:2px;height:18px;background:var(--line-2)}
@@ -268,7 +268,7 @@ h1 em{font-style:normal;color:var(--dim-2)}
   background-position:center top;
 }
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px;flex-wrap:wrap}
-.sec-head h2{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.sec-head h2{font-size:18px;font-weight:600;letter-spacing:-.02em}
 .sec-head p{color:var(--dim);font-size:14px;margin-top:5px;max-width:58ch}
 
 .app{
@@ -354,8 +354,8 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
 .result .card-head{border-bottom-color:rgba(74,222,128,.14)}
 .model-tag{font:500 12.5px var(--mono);color:var(--accent);text-transform:none;letter-spacing:0}
 .figs{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:20px;align-items:end}
-.fig .v{font:600 clamp(28px,3.6vw,40px)/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
-.fig .v.sm{font-size:clamp(17px,2vw,21px);color:var(--dim);letter-spacing:-.02em}
+.fig .v{font:600 clamp(25px,2.4vw,31px)/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.fig .v.sm{font-size:clamp(15px,1.5vw,17px);color:var(--dim);letter-spacing:-.02em}
 .fig .l{font:500 10.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2);margin-top:11px}
 @media(max-width:640px){
   .figs{grid-template-columns:1fr 1fr;gap:18px}
@@ -430,15 +430,15 @@ td.m{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
    ============================================================ */
 .prose{padding:80px 0;border-top:1px solid var(--line)}
 .prose-inner{max-width:70ch}
-.prose h2{font-size:clamp(24px,3vw,32px);font-weight:600;letter-spacing:-.028em;margin-bottom:14px}
-.prose h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:38px 0 10px}
-.prose p{color:var(--dim);margin-bottom:14px;font-size:15.5px;line-height:1.68;text-wrap:pretty}
+.prose h2{font-size:clamp(19px,2vw,25px);font-weight:600;letter-spacing:-.028em;margin-bottom:14px}
+.prose h3{font-size:16.5px;font-weight:600;letter-spacing:-.015em;margin:38px 0 10px}
+.prose p{color:var(--dim);margin-bottom:13px;font-size:15px;line-height:1.65;text-wrap:pretty}
 .prose p b,.prose li b{color:var(--txt);font-weight:600}
 .prose code{font-family:var(--mono);font-size:13.5px;color:var(--accent);background:var(--surface);padding:2px 6px;border-radius:0}
 .formula{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
   padding:20px 22px;margin:20px 0;overflow-x:auto;
-  font:15px/1.7 var(--mono);color:var(--accent);letter-spacing:-.01em;
+  font:13.5px/1.7 var(--mono);color:var(--accent);letter-spacing:-.01em;
 }
 .levers{list-style:none;counter-reset:l;margin:20px 0 0}
 .levers li{
@@ -490,7 +490,8 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
   .preset{padding:11px 14px;font-size:13px}
   .presets{gap:8px}
   input[type=range]{height:44px}
-  input[type=number],select{height:44px}
+  /* iOS zooms the viewport when a focused field is under 16px. */
+  input[type=number],select{height:44px;font-size:16px}
   .faq summary{padding:20px 0}
 }
 
