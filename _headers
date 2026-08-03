@@ -1,0 +1,18 @@
+# Cloudflare Pages reads this file at deploy time. It must sit at the site root.
+# The CSP is deliberately strict: the page loads zero external resources, so
+# "no data leaves your browser" becomes a rule the browser enforces, not just
+# a claim in the footer. If you ever add an external script, this will block it
+# until you update this file, which is the correct default.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
+
+/social-card.png
+  Cache-Control: public, max-age=604800
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

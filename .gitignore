@@ -1,0 +1,13 @@
+# Allowlist. Nothing is tracked unless it is named below.
+# To publish a new file, add a matching "!" line for it.
+
+*
+
+!.gitignore
+!README.md
+!index.html
+!social-card.png
+!_headers
+!robots.txt
+!sitemap.xml
+!models.json
