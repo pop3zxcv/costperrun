@@ -12,3 +12,5 @@
 !sitemap.xml
 !models.json
 !*.woff2
+!llms.txt
+!404.html
