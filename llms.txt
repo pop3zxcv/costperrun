@@ -1,0 +1,43 @@
+# costperrun
+
+> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 17 models from OpenAI, Anthropic, Google, xAI and DeepSeek.
+
+Language models are stateless. An agent must re-send its whole history on every step, so total input tokens across N steps come out as:
+
+    N × (system + user) + (output + tool_result) × N × (N−1) / 2
+
+The second term is quadratic. Doubling the step count roughly quadruples the input cost. Most LLM pricing calculators price a single request, which is correct for a chatbot and understates agent cost by several times.
+
+Worked example, a 12-step agent with a 2,000-token system prompt, a 500-token task, and 400 output plus 1,200 tool-result tokens per step:
+
+- Raw conversation length: 21,700 tokens
+- Billed input at a 0% retry rate: 135,600 tokens, a 6.2x multiplier
+- Billed input at a 10% retry rate: 149,160 tokens, a 6.9x multiplier
+
+The multiplier grows with step count: about 1.7x at 3 steps, 6.2x at 12, 10.3x at 20, 25.3x at 50 and 50.3x at 100.
+
+The three levers that reduce it, in order of effect: prompt caching, because cache reads cost roughly 90% less and most of the bill is context re-sent verbatim; step count, because it is superlinear while price is linear; and tool-result size, because every tool result is re-sent by every later step.
+
+## Pages
+
+- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 17 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
+- [Method and FAQ](https://costperrun.com/#method): Derivation of the formula, the worked example, the three levers ranked, and a plain statement of what the model does not cover.
+
+## Data
+
+- [models.json](https://costperrun.com/models.json): The canonical pricing dataset. Every rate carries the provider's own pricing URL and the date it was verified.
+- [Source repository](https://github.com/pop3zxcv/costperrun): Full source. Stale prices can be reported as issues.
+
+## Limitations
+
+- Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted.
+- Cache hit rate is a single figure rather than per-prefix.
+- Cache writes are not modelled. OpenAI's GPT-5.6 charges 1.25x uncached input to write to cache; only reads are priced.
+- Batch API and long-context pricing tiers are not included.
+- Providers use different tokenizers, so cross-vendor token counts are approximate.
+- Output is a planning estimate, not a billing forecast.
+
+## Notes
+
+- Prices verified August 2026. Claude Sonnet 5's $2/$10 rate is introductory and reverts to $3/$15 on 1 September 2026.
+- No tracking, no signup, no analytics. The Content-Security-Policy is `default-src 'none'`, so the page cannot make outbound requests.
