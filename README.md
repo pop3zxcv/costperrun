@@ -87,6 +87,17 @@ console.log(Math.round(b.tokTotalIn)===149160 ? "PASS" : "FAIL");
 '
 ```
 
+## Deploying
+
+The site is hosted on Cloudflare Pages, connected to this repository. Pushing
+to `main` triggers a build and deploy automatically. There is no build step:
+Cloudflare serves the repository root as-is, so the framework preset is
+`None` and both the build command and output directory are empty.
+
+`_headers` must stay at the repository root. It is what sets the Content
+Security Policy and the font cache headers, and Cloudflare only reads it from
+the root of the deployed directory.
+
 ## Licence
 
 MIT for the code. Pricing data is compiled from public provider pages and is provided as-is.
