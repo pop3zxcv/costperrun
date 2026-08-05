@@ -98,6 +98,14 @@ Cloudflare serves the repository root as-is, so the framework preset is
 Security Policy and the font cache headers, and Cloudflare only reads it from
 the root of the deployed directory.
 
+**If this repository is ever deleted and recreated, pushes will stop deploying.**
+The Cloudflare Workers and Pages GitHub App grants access per repository *ID*,
+not per name, so a recreated repository is a different repository as far as the
+App is concerned. The Cloudflare dashboard shows "This project is disconnected
+from your Git account" and keeps reporting automatic deployments as enabled,
+which makes it look configured when it is not. Fix it at
+github.com/settings/installations by re-granting access to this repository.
+
 ## Licence
 
 MIT for the code. Pricing data is compiled from public provider pages and is provided as-is.
