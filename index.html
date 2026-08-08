@@ -710,6 +710,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <p>Total input tokens across <code>N</code> steps come out as:</p>
       <div class="formula">N × (system + user) + (output + tool_result) × N × (N−1) / 2</div>
       <p>That second term is quadratic. Double the steps and you roughly quadruple the input cost. It is the most consistent reason real invoices beat estimates.</p>
+      <p>Which half of the formula matters flips early, and this is where most cost-cutting goes wrong. The system prompt and the task sit in the <em>linear</em> term. Only the output and tool results carry the quadratic one. For the workload below the two are equal at about four steps; by step 12 the quadratic term is <b>78%</b> of billed input, and by step 50 it is <b>94%</b>. So shortening the system prompt attacks the part that has almost stopped growing. Cache it instead, and spend the effort on step count and tool-result size.</p>
 
       <h3>A worked example</h3>
       <p>A 12-step agent with a 2,000-token system prompt, 500-token task, 400 output tokens and 1,200 tool-result tokens per step has a raw conversation length of <b>21,700 tokens</b>, and bills <b>135,600 input tokens</b>. That is a 6.2× multiplier which shows up on the invoice and in nobody's estimate.</p>
@@ -717,7 +718,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <h3>The three levers, in order</h3>
       <ol class="levers">
-        <li><strong>Prompt caching</strong>Most of the bill is context re-sent verbatim, and cache reads cost roughly 90% less. In the example above, a 90% hit rate takes the run from $0.351 to $0.110 on Claude Sonnet 5. Same model, same agent.</li>
+        <li><strong>Prompt caching</strong>Most of the bill is context re-sent verbatim, and cache reads cost roughly 90% less. In the example above, a 90% hit rate takes the run from $0.351 to $0.110 on Claude Sonnet 5. Same model, same agent. The system prompt is the one segment sent byte-identical on every call, which makes it the easiest thing to cache and the wrong thing to trim.</li>
         <li><strong>Step count</strong>Cutting steps beats switching to a cheaper model in most configurations, because step count is superlinear while price is linear. Going from 20 steps to 10 saves more than moving from a frontier model to a small one.</li>
         <li><strong>Tool-result size</strong>Underrated, because every tool result is re-sent by every step that follows it. Truncating a 5,000-token search result to 1,000 compounds across the whole run.</li>
       </ol>
