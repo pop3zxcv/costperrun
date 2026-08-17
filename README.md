@@ -36,7 +36,7 @@ Both figures are correct and they measure different things. 6.2× is the context
 - Tool-result size, which is re-sent by every subsequent step
 - Retry and failure rate
 - Prompt cache hit rate
-- 17 models across OpenAI, Anthropic, Google, xAI and DeepSeek
+- 18 models across OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek
 - Per-step cost accumulation and cost attribution by component
 
 ## What it does not model

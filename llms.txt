@@ -1,6 +1,6 @@
 # costperrun
 
-> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 17 models from OpenAI, Anthropic, Google, xAI and DeepSeek.
+> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 18 models from OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek.
 
 Language models are stateless. An agent must re-send its whole history on every step, so total input tokens across N steps come out as:
 
@@ -20,7 +20,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 ## Pages
 
-- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 17 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
+- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 18 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
 - [Method and FAQ](https://costperrun.com/#method): Derivation of the formula, the worked example, the three levers ranked, and a plain statement of what the model does not cover.
 
 ## Data
@@ -35,6 +35,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 - Cache writes are not modelled. OpenAI's GPT-5.6 charges 1.25x uncached input to write to cache; only reads are priced.
 - Batch API and long-context pricing tiers are not included.
 - Providers use different tokenizers, so cross-vendor token counts are approximate.
+- Tiered pricing is flattened to the more expensive tier. DeepSeek bills peak and off-peak, with off-peak half of peak; the figures here are peak. Grok doubles all rates above 200K prompt tokens. Gemini raises rates above a context threshold.
 - Output is a planning estimate, not a billing forecast.
 
 ## Notes
