@@ -1,20 +1,33 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-08-05",
+  "lastUpdated": "2026-08-23",
   "notes": {
     "cacheReads": "Most providers discount cache reads ~90% off input. Anthropic prices cache hits at 10% of input.",
-    "cacheWrites": "OpenAI GPT-5.6 charges 1.25x uncached input for cache WRITES. Not represented in cachedInput and not modelled in the calculator.",
+    "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
     "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate.",
     "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
-    "longContext": "Gemini and xAI raise rates above a context threshold (Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K; Grok doubles all rates at >=200K). Only the standard tier is listed.",
-    "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC. This dataset lists PEAK so the calculator never understates."
+    "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI GPT-5.6 short context vs long: Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
+    "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday to Friday. This dataset lists PEAK.",
+    "promotionalRates": "Gemini 3.6 Flash and 3.7 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. Listed at the rate in force today, same as Claude Sonnet 5's introductory rate. See pendingChanges."
   },
   "pendingChanges": [
     {
       "date": "2026-09-01",
       "model": "sonnet-5",
       "change": "Introductory pricing ends. input 2.00 -> 3.00, output 10.00 -> 15.00, cachedInput 0.20 -> 0.30",
+      "action": "Scheduled provider price change. This dataset is updated on or before this date."
+    },
+    {
+      "date": "2027-01-01",
+      "model": "gemini-3-6-fl",
+      "change": "Promotional pricing ends. input 0.75 -> 1.50, output 3.75 -> 7.50, cachedInput 0.075 -> 0.15",
+      "action": "Scheduled provider price change. This dataset is updated on or before this date."
+    },
+    {
+      "date": "2027-01-01",
+      "model": "gemini-3-7-fl",
+      "change": "Promotional pricing ends. input 0.75 -> 1.50, output 3.75 -> 7.50, cachedInput 0.075 -> 0.15",
       "action": "Scheduled provider price change. This dataset is updated on or before this date."
     }
   ],
@@ -23,125 +36,114 @@
       "id": "gpt-5-6-sol",
       "provider": "OpenAI",
       "name": "GPT-5.6 Sol",
-      "input": 5.0,
-      "cachedInput": 0.5,
-      "output": 30.0,
-      "context": 1000000,
-      "sourceUrl": "https://openai.com/index/gpt-5-6/",
-      "verifiedAt": "2026-08-02"
+      "input": 4,
+      "cachedInput": 0.4,
+      "output": 20,
+      "context": 1050000,
+      "sourceUrl": "https://platform.openai.com/docs/pricing",
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "gpt-5-6-terra",
       "provider": "OpenAI",
       "name": "GPT-5.6 Terra",
-      "input": 2.5,
-      "cachedInput": 0.25,
-      "output": 15.0,
-      "context": 1000000,
-      "sourceUrl": "https://openai.com/index/gpt-5-6/",
-      "verifiedAt": "2026-08-02"
+      "input": 2,
+      "cachedInput": 0.2,
+      "output": 12,
+      "context": 1050000,
+      "sourceUrl": "https://platform.openai.com/docs/pricing",
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "gpt-5-6-luna",
       "provider": "OpenAI",
       "name": "GPT-5.6 Luna",
-      "input": 1.0,
-      "cachedInput": 0.1,
-      "output": 6.0,
-      "context": 1000000,
-      "sourceUrl": "https://openai.com/index/gpt-5-6/",
-      "verifiedAt": "2026-08-02",
-      "note": "Price cut 80% on 2026-07-30"
-    },
-    {
-      "id": "gpt-5-4-mini",
-      "provider": "OpenAI",
-      "name": "GPT-5.4 mini",
-      "input": 0.75,
-      "cachedInput": 0.075,
-      "output": 4.5,
-      "context": 400000,
-      "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-08-02"
-    },
-    {
-      "id": "gpt-5-4-nano",
-      "provider": "OpenAI",
-      "name": "GPT-5.4 nano",
       "input": 0.2,
       "cachedInput": 0.02,
-      "output": 1.25,
-      "context": null,
+      "output": 1.2,
+      "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-08-02"
+      "verifiedAt": "2026-08-23",
+      "note": "Price cut 80% on 2026-07-30"
     },
     {
       "id": "fable-5",
       "provider": "Anthropic",
       "name": "Claude Fable 5",
-      "input": 10.0,
-      "cachedInput": 1.0,
-      "output": 50.0,
+      "input": 10,
+      "cachedInput": 1,
+      "output": 50,
       "context": 1000000,
       "sourceUrl": "https://www.anthropic.com/pricing#api",
-      "verifiedAt": "2026-08-02"
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "opus-5",
       "provider": "Anthropic",
       "name": "Claude Opus 5",
-      "input": 5.0,
+      "input": 5,
       "cachedInput": 0.5,
-      "output": 25.0,
+      "output": 25,
       "context": 1000000,
       "sourceUrl": "https://www.anthropic.com/pricing#api",
-      "verifiedAt": "2026-08-02"
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "sonnet-5",
       "provider": "Anthropic",
       "name": "Claude Sonnet 5",
-      "input": 2.0,
+      "input": 2,
       "cachedInput": 0.2,
-      "output": 10.0,
+      "output": 10,
       "context": 1000000,
       "sourceUrl": "https://www.anthropic.com/pricing#api",
-      "verifiedAt": "2026-08-02",
+      "verifiedAt": "2026-08-23",
       "note": "INTRODUCTORY through 2026-08-31. Reverts to 3.00/15.00 on 2026-09-01."
     },
     {
       "id": "haiku-4-5",
       "provider": "Anthropic",
       "name": "Claude Haiku 4.5",
-      "input": 1.0,
+      "input": 1,
       "cachedInput": 0.1,
-      "output": 5.0,
-      "context": 1000000,
+      "output": 5,
+      "context": 200000,
       "sourceUrl": "https://www.anthropic.com/pricing#api",
-      "verifiedAt": "2026-08-02"
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "gemini-3-1-pro",
       "provider": "Google",
       "name": "Gemini 3.1 Pro",
-      "input": 2.0,
+      "input": 2,
       "cachedInput": 0.2,
-      "output": 12.0,
+      "output": 12,
       "context": null,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-08-02",
+      "verifiedAt": "2026-08-23",
       "note": "Rises to 4.00/18.00 for long context"
+    },
+    {
+      "id": "gemini-3-7-fl",
+      "provider": "Google",
+      "name": "Gemini 3.7 Flash",
+      "input": 0.75,
+      "cachedInput": 0.075,
+      "output": 3.75,
+      "context": 1048576,
+      "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
+      "verifiedAt": "2026-08-23"
     },
     {
       "id": "gemini-3-6-fl",
       "provider": "Google",
       "name": "Gemini 3.6 Flash",
-      "input": 1.5,
-      "cachedInput": 0.15,
-      "output": 7.5,
-      "context": null,
+      "input": 0.75,
+      "cachedInput": 0.075,
+      "output": 3.75,
+      "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-08-02",
+      "verifiedAt": "2026-08-23",
       "note": "Launched 2026-07-21"
     },
     {
@@ -150,34 +152,34 @@
       "name": "Gemini 2.5 Pro",
       "input": 1.25,
       "cachedInput": 0.125,
-      "output": 10.0,
+      "output": 10,
       "context": null,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-08-02",
+      "verifiedAt": "2026-08-23",
       "note": "Rises to 2.50/15.00 above 200K context"
     },
     {
       "id": "grok-4-5",
       "provider": "xAI",
       "name": "Grok 4.5",
-      "input": 2.0,
+      "input": 2,
       "cachedInput": 0.3,
-      "output": 6.0,
+      "output": 6,
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "Rates double at >=200K prompt tokens"
     },
     {
       "id": "grok-4-6",
       "provider": "xAI",
       "name": "Grok 4.6",
-      "input": 2.0,
+      "input": 2,
       "cachedInput": 0.5,
-      "output": 6.0,
+      "output": 6,
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "Current flagship. Rates double at >=200K prompt tokens"
     },
     {
@@ -189,7 +191,7 @@
       "output": 2.5,
       "context": 1000000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "Rates double at >=200K prompt tokens"
     },
     {
@@ -201,7 +203,7 @@
       "output": 3.96,
       "context": 1000000,
       "sourceUrl": "https://api-docs.deepseek.com/quick_start/pricing",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "PEAK rate. Off-peak is half (0.66/0.022/1.98). Peak is 01:00-04:00 and 06:00-10:00 UTC"
     },
     {
@@ -213,26 +215,47 @@
       "output": 1.32,
       "context": 1000000,
       "sourceUrl": "https://api-docs.deepseek.com/quick_start/pricing",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "PEAK rate. Off-peak is half (0.22/0.007/0.66). Peak is 01:00-04:00 and 06:00-10:00 UTC"
     },
     {
       "id": "kimi-k3",
       "provider": "Moonshot",
       "name": "Kimi K3",
-      "input": 3.0,
+      "input": 3,
       "cachedInput": 0.3,
-      "output": 15.0,
+      "output": 15,
       "context": 1048576,
       "sourceUrl": "https://platform.kimi.ai/docs/pricing/chat-k3",
-      "verifiedAt": "2026-08-05",
+      "verifiedAt": "2026-08-23",
       "note": "Flat across the full context window, no long-context tier"
     }
   ],
   "unverified": {
     "$comment": "Values below come from secondary sources and are not confirmed against a primary provider page. They are listed for reference and are not used by the calculator.",
-    "gpt-5-6-cacheWriteMultiplier": 1.25,
     "anthropicCacheHitRatio": 0.1,
     "batchDiscount": 0.5
-  }
+  },
+  "excluded": [
+    {
+      "id": "gpt-5-4-mini",
+      "reason": "Retired. Absent from the OpenAI models and pricing pages on 2026-08-23, while older gpt-4o-mini and gpt-4.1-mini are still listed."
+    },
+    {
+      "id": "gpt-5-4-nano",
+      "reason": "Retired. Same as gpt-5-4-mini."
+    },
+    {
+      "id": "gpt-5-6-cyber",
+      "reason": "Listed at 12.50/1.25/75.00. Excluded: a specialised model gated to authorised vulnerability research, not a general agent model."
+    },
+    {
+      "id": "claude-mythos-5",
+      "reason": "Listed at 10.00/50.00. Excluded: restricted access, not generally purchasable."
+    },
+    {
+      "id": "deepseek-v4-flash-vision-exp",
+      "reason": "Same rates as deepseek-v4-flash. Excluded: experimental vision model."
+    }
+  ]
 }
