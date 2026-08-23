@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Agent Cost Calculator | What one agent run actually costs</title>
-<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 18 models.">
+<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 17 models.">
 <link rel="canonical" href="https://costperrun.com/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#191919">
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://costperrun.com/">
 <meta property="og:site_name" content="Cost Per Run">
 <meta property="og:title" content="Your AI agent bills about 6x the tokens you would estimate">
-<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 18 models. Free, no signup.">
+<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 17 models. Free, no signup.">
 <meta property="og:image" content="https://costperrun.com/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -42,7 +42,7 @@
     "Models quadratic context accumulation across agent steps",
     "Retry rate and prompt cache hit rate modelling",
     "Cost attribution breakdown by component",
-    "Side-by-side comparison of 18 models",
+    "Side-by-side comparison of 17 models",
     "Per-step cost accumulation table",
     "Shareable URLs for any workload configuration"
   ]
@@ -536,7 +536,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
       <a class="btn" href="#method">Read the method</a>
     </div>
-    <p class="microcopy"><b>18 models</b> · No signup · Nothing leaves your browser</p>
+    <p class="microcopy"><b>17 models</b> · No signup · Nothing leaves your browser</p>
   </div>
 
   <div class="proof">
@@ -726,7 +726,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <div class="limits">
         <h4>Assumptions and limits</h4>
         <p>Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted. Cache hit rate is a single figure rather than per-prefix. Providers use different tokenizers, so cross-vendor token counts are approximate. OpenAI's GPT-5.6 charges 1.25× uncached input for cache <em>writes</em>, which is not modelled here, only reads. Treat the output as a planning estimate, not a billing forecast.</p>
-        <p>Each model carries one rate, so tiered pricing is flattened to the more expensive tier rather than the cheaper one. DeepSeek bills peak and off-peak, with off-peak half the peak rate; the figures here are peak, so a run scheduled outside 01:00 to 04:00 and 06:00 to 10:00 UTC costs about half what is shown. Grok doubles every rate above 200K prompt tokens, and Gemini raises its rates above a context threshold too. In each case the calculator uses the rate you are more likely to be surprised by.</p>
+        <p>Each model carries one rate, so tiered pricing is flattened, and the direction of the error differs by provider. DeepSeek bills peak and off-peak, with off-peak half the peak rate; the figures here are peak, so a run scheduled outside 01:00 to 04:00 and 06:00 to 10:00 UTC on a weekday costs about half what is shown. OpenAI, xAI and Google instead raise rates once a single request crosses 200K tokens, and the figures here are the base tier, so a long agent is undercharged rather than overcharged. Grok doubles every rate at that point, and GPT-5.6 Sol goes from $4 / $20 to $8 / $30. On the default workload the largest single request is about 81K tokens at 50 steps, so the threshold only starts to bite past roughly 125 steps.</p>
       </div>
     </div>
   </div>
@@ -791,17 +791,16 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
 <script>
 const MODELS=[
- {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:5.00,  c:0.50,   o:30.00},
- {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.50,  c:0.25,   o:15.00},
- {id:"gpt-5-6-luna",  p:"OpenAI",   n:"GPT-5.6 Luna",    i:1.00,  c:0.10,   o:6.00},
- {id:"gpt-5-4-mini",  p:"OpenAI",   n:"GPT-5.4 mini",    i:0.75,  c:0.075,  o:4.50},
- {id:"gpt-5-4-nano",  p:"OpenAI",   n:"GPT-5.4 nano",    i:0.20,  c:0.02,   o:1.25},
+ {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:4.00,  c:0.40,   o:20.00},
+ {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.00,  c:0.20,   o:12.00},
+ {id:"gpt-5-6-luna",  p:"OpenAI",   n:"GPT-5.6 Luna",    i:0.20,  c:0.02,   o:1.20},
  {id:"fable-5",       p:"Anthropic",n:"Claude Fable 5",  i:10.00, c:1.00,   o:50.00},
  {id:"opus-5",        p:"Anthropic",n:"Claude Opus 5",   i:5.00,  c:0.50,   o:25.00},
  {id:"sonnet-5",      p:"Anthropic",n:"Claude Sonnet 5", i:2.00,  c:0.20,   o:10.00},
  {id:"haiku-4-5",     p:"Anthropic",n:"Claude Haiku 4.5",i:1.00,  c:0.10,   o:5.00},
  {id:"gemini-3-1-pro",p:"Google",   n:"Gemini 3.1 Pro",  i:2.00,  c:0.20,   o:12.00},
- {id:"gemini-3-6-fl", p:"Google",   n:"Gemini 3.6 Flash",i:1.50,  c:0.15,   o:7.50},
+ {id:"gemini-3-7-fl", p:"Google",   n:"Gemini 3.7 Flash",i:0.75,  c:0.075,  o:3.75},
+ {id:"gemini-3-6-fl", p:"Google",   n:"Gemini 3.6 Flash",i:0.75,  c:0.075,  o:3.75},
  {id:"gemini-2-5-pro",p:"Google",   n:"Gemini 2.5 Pro",  i:1.25,  c:0.125,  o:10.00},
  {id:"grok-4-6",      p:"xAI",      n:"Grok 4.6",        i:2.00,  c:0.50,   o:6.00},
  {id:"grok-4-5",      p:"xAI",      n:"Grok 4.5",        i:2.00,  c:0.30,   o:6.00},
