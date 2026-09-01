@@ -519,7 +519,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a href="#faq">FAQ</a>
     </nav>
     <div class="right">
-      <span class="stamp"><span class="dot"></span>Prices verified Aug 2026</span>
+      <span class="stamp"><span class="dot"></span>Prices verified Sep 2026</span>
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
     </div>
   </div>
@@ -725,7 +725,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <div class="limits">
         <h4>Assumptions and limits</h4>
-        <p>Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted. Cache hit rate is a single figure rather than per-prefix. Providers use different tokenizers, so cross-vendor token counts are approximate. OpenAI's GPT-5.6 charges 1.25× uncached input for cache <em>writes</em>, which is not modelled here, only reads. Treat the output as a planning estimate, not a billing forecast.</p>
+        <p>Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted. Cache hit rate is a single figure rather than per-prefix. Providers use different tokenizers, so cross-vendor token counts are approximate. The same is true inside Anthropic's own lineup: Claude 4.7 and later, which covers Sonnet 5, Opus 5 and Fable 5, use a newer tokenizer that turns the same text into about 30% more tokens than Haiku 4.5 does. Entering one token count and comparing those models therefore understates what Sonnet 5 bills for the same work. OpenAI's GPT-5.6 charges 1.25× uncached input for cache <em>writes</em>, which is not modelled here, only reads. Treat the output as a planning estimate, not a billing forecast.</p>
         <p>Each model carries one rate, so tiered pricing is flattened, and the direction of the error differs by provider. DeepSeek bills peak and off-peak, with off-peak half the peak rate; the figures here are peak, so a run scheduled outside 01:00 to 04:00 and 06:00 to 10:00 UTC on a weekday costs about half what is shown. OpenAI, xAI and Google instead raise rates once a single request crosses 200K tokens, and the figures here are the base tier, so a long agent is undercharged rather than overcharged. Grok doubles every rate at that point, and GPT-5.6 Sol goes from $4 / $20 to $8 / $30. On the default workload the largest single request is about 81K tokens at 50 steps, so the threshold only starts to bite past roughly 125 steps.</p>
       </div>
     </div>
@@ -760,7 +760,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <details>
         <summary>Where do the prices come from?</summary>
-        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked in August 2026. Claude Sonnet 5's $2 / $10 rate is introductory and reverts to $3 / $15 on 1 September 2026. Confirm against the official page before you commit budget.</div>
+        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 1 September 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
       </details>
     </div>
   </div>
@@ -780,7 +780,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       </a>
       <p>Free. No signup. No tracking. No data leaves your browser.</p>
     </div>
-    <p>Model prices verified against provider announcements and pricing trackers as of <b>August 2026</b>. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 rate is introductory and reverts to $3 / $15 on 1 September 2026. Cached-input rates assume the standard 90% read discount.</p>
+    <p>Model prices verified against provider announcements and pricing trackers as of <b>1 September 2026</b>. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates assume the standard 90% read discount.</p>
   </div>
 </footer>
 
