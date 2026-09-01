@@ -47,7 +47,7 @@ Stated plainly, because a cost tool that hides its limits is not worth using:
 - **Cache hit rate is one number**, not per-prefix.
 - **Cache writes are not modelled.** OpenAI's GPT-5.6 charges 1.25× uncached input to write to cache. Only reads are priced here.
 - **Batch API and long-context pricing tiers** are not included.
-- **Tokenizers differ by provider**, so cross-vendor token counts are approximate.
+- **Tokenizers differ by provider**, so cross-vendor token counts are approximate. They also differ inside Anthropic: Claude 4.7 and later (Sonnet 5, Opus 5, Fable 5) use a newer tokenizer producing about 30% more tokens for the same text than Haiku 4.5.
 
 Treat the output as a planning estimate, not a billing forecast.
 
@@ -57,7 +57,7 @@ Treat the output as a planning estimate, not a billing forecast.
 
 **Found a stale price?** Open an issue with the provider's pricing URL. That is the most useful contribution you can make here.
 
-Note: Claude Sonnet 5's $2 / $10 rate is introductory and reverts to $3 / $15 on 1 September 2026.
+Note: Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026. Anthropic cancelled the scheduled increase to $3 / $15, so $2 / $10 is now the standard rate.
 
 ## Privacy
 
