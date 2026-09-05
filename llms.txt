@@ -1,6 +1,6 @@
 # costperrun
 
-> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 17 models from OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek.
+> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 18 models from OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek.
 
 Language models are stateless. An agent must re-send its whole history on every step, so total input tokens across N steps come out as:
 
@@ -20,7 +20,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 ## Pages
 
-- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 17 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
+- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 18 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
 - [Method and FAQ](https://costperrun.com/#method): Derivation of the formula, the worked example, the three levers ranked, and a plain statement of what the model does not cover.
 
 ## Data
@@ -35,12 +35,13 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 - Cache writes are not modelled. OpenAI's GPT-5.6 charges 1.25x uncached input to write to cache; only reads are priced.
 - Batch API and long-context pricing tiers are not included.
 - Providers use different tokenizers, so cross-vendor token counts are approximate. This holds inside Anthropic's lineup too: Claude 4.7 and later, which covers Sonnet 5, Opus 5 and Fable 5, use a newer tokenizer producing about 30% more tokens for the same text than Haiku 4.5. A single token count compared across those models understates what Sonnet 5 bills for the same work.
-- Tiered pricing is flattened, and the direction of the error differs by provider. DeepSeek bills peak and off-peak, with off-peak half of peak; the figures here are peak, so a run scheduled off-peak costs about half what is shown. OpenAI, xAI and Google raise rates once a single request crosses 200K tokens, and the figures here are the base tier, so a long agent is undercharged. Grok doubles every rate at that point; GPT-5.6 Sol goes from $4/$20 to $8/$30. On the default workload the largest single request is about 81K tokens at 50 steps, so this only bites past roughly 125 steps.
+- Tiered pricing is flattened, and the direction of the error differs by provider. DeepSeek bills peak and off-peak, with off-peak half of peak; the figures here are peak, so a run scheduled off-peak costs about half what is shown. OpenAI, xAI and Google raise rates on large requests, and the figures here are the base tier, so a long agent is undercharged. Grok and Gemini change gear at 200K tokens, Grok by doubling every rate. OpenAI's threshold is 272K, where the whole request is rebilled at 2x input and 1.5x output, taking GPT-6 Astra from $10/$50 to $20/$75. On the default workload the largest single request is about 81K tokens at 50 steps, so this only bites past roughly 125 steps on Grok and Gemini and 170 on OpenAI.
 - Output is a planning estimate, not a billing forecast.
 
 ## Notes
 
-- Prices verified 1 September 2026 against each provider's own pricing page.
+- Prices verified 5 September 2026 against each provider's own pricing page.
+- GPT-5.6 Sol's $4/$20 is promotional, described by OpenAI as available at least through 21 November 2026. No successor rate is published.
 - Claude Sonnet 5's $2/$10 was announced as introductory through 31 August 2026. Anthropic cancelled the scheduled increase to $3/$15 and $2/$10 is now the standard rate.
 - Gemini 3.6 Flash and 3.7 Flash are on promotional rates of $0.75/$3.75 through 31 December 2026 and double on 1 January 2027.
 - No tracking, no signup, no analytics. The Content-Security-Policy is `default-src 'none'`, so the page cannot make outbound requests.
