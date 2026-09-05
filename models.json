@@ -1,15 +1,15 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-01",
+  "lastUpdated": "2026-09-05",
   "notes": {
     "cacheReads": "Most providers discount cache reads ~90% off input. Anthropic prices cache hits at 10% of input.",
-    "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
+    "cacheWrites": "OpenAI publishes a cache-WRITE column for GPT-6 Astra and every GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
     "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate. This also applies within Anthropic: Claude 4.7 and later, which includes Sonnet 5, Opus 5 and Fable 5, use a newer tokenizer that produces about 30% more tokens for the same text than Sonnet 4.6 and earlier, which includes Haiku 4.5.",
     "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
-    "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI GPT-5.6 short context vs long: Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
+    "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday to Friday. This dataset lists PEAK.",
-    "promotionalRates": "Gemini 3.6 Flash and 3.7 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. Listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
+    "promotionalRates": "Gemini 3.6 Flash and 3.7 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
   },
   "pendingChanges": [
     {
@@ -27,6 +27,17 @@
   ],
   "models": [
     {
+      "id": "gpt-6-astra",
+      "provider": "OpenAI",
+      "name": "GPT-6 Astra",
+      "input": 10.0,
+      "cachedInput": 1.0,
+      "output": 50.0,
+      "context": 1050000,
+      "sourceUrl": "https://platform.openai.com/docs/pricing",
+      "verifiedAt": "2026-09-05"
+    },
+    {
       "id": "gpt-5-6-sol",
       "provider": "OpenAI",
       "name": "GPT-5.6 Sol",
@@ -35,7 +46,8 @@
       "output": 20,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-08-23"
+      "verifiedAt": "2026-09-05",
+      "note": "The 4.00/20.00 rate is promotional, described by OpenAI as available at least through 2026-11-21. No successor rate is published."
     },
     {
       "id": "gpt-5-6-terra",
@@ -46,7 +58,7 @@
       "output": 12,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-08-23"
+      "verifiedAt": "2026-09-05"
     },
     {
       "id": "gpt-5-6-luna",
@@ -57,7 +69,7 @@
       "output": 1.2,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-08-23",
+      "verifiedAt": "2026-09-05",
       "note": "Price cut 80% on 2026-07-30"
     },
     {
@@ -233,15 +245,15 @@
   "excluded": [
     {
       "id": "gpt-5-4-mini",
-      "reason": "Retired. Absent from the OpenAI models and pricing pages on 2026-08-23, while older gpt-4o-mini and gpt-4.1-mini are still listed."
+      "reason": "Listed and generally available: 0.75/0.075/4.50, 400K context, checked 2026-09-05. The earlier reason recorded here, that it was retired and absent from OpenAI's pages, was wrong. Excluded now only as a superseded prior-generation model."
     },
     {
       "id": "gpt-5-4-nano",
-      "reason": "Retired. Same as gpt-5-4-mini."
+      "reason": "Listed and generally available: 0.20/0.02/1.25, 400K context, checked 2026-09-05. Same correction as gpt-5-4-mini."
     },
     {
       "id": "gpt-5-6-cyber",
-      "reason": "Listed at 12.50/1.25/75.00. Excluded: a specialised model gated to authorised vulnerability research, not a general agent model."
+      "reason": "Listed at 12.50/1.25/75.00. Excluded: requires separate approval through OpenAI's Daybreak programme for authorised vulnerability research, so it is not generally purchasable. Re-checked 2026-09-05."
     },
     {
       "id": "claude-mythos-5",
