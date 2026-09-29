@@ -36,7 +36,7 @@ Both figures are correct and they measure different things. 6.2× is the context
 - Tool-result size, which is re-sent by every subsequent step
 - Retry and failure rate
 - Prompt cache hit rate
-- 20 models across OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek
+- 21 models across OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek
 - Per-step cost accumulation and cost attribution by component
 
 ## What it does not model
@@ -47,7 +47,7 @@ Stated plainly, because a cost tool that hides its limits is not worth using:
 - **Cache hit rate is one number**, not per-prefix.
 - **Cache writes are not modelled.** OpenAI's GPT-5.6 charges 1.25× uncached input to write to cache. Only reads are priced here.
 - **Batch API and long-context pricing tiers** are not included.
-- **Tokenizers differ by provider**, so cross-vendor token counts are approximate. They also differ inside Anthropic: Claude 4.7 and later (Fable 5.1, Opus 5.5, Sonnet 5, Opus 5, Fable 5) use a newer tokenizer producing about 30% more tokens for the same text than Haiku 4.5.
+- **Tokenizers differ by provider**, so cross-vendor token counts are approximate. They also differ inside Anthropic: Claude 4.7 and later (every Claude model here except Haiku 4.5) use a newer tokenizer producing about 30% more tokens for the same text than Haiku 4.5.
 
 Treat the output as a planning estimate, not a billing forecast.
 
@@ -80,7 +80,7 @@ node -e '
 const fs=require("fs"), h=fs.readFileSync("index.html","utf8");
 const models=eval(h.match(/const MODELS=(\[[\s\S]*?\]);/)[1]);
 eval(h.match(/function calc\(m,p\)\{[\s\S]*?\n\}/)[0]);
-const s=models.find(m=>m.id==="sonnet-5");
+const s=models.find(m=>m.id==="sonnet-5-5");
 const base={S:2000,U:500,N:12,O:400,T:1200};
 const b=calc(s,{...base,R:0.10,C:0});
 console.log(Math.round(b.tokTotalIn)===149160 ? "PASS" : "FAIL");
