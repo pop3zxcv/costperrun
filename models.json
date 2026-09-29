@@ -1,11 +1,11 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-23",
+  "lastUpdated": "2026-09-29",
   "notes": {
     "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 (0.05x) and Claude Fable 5.1 (0.025x).",
     "cacheWrites": "OpenAI publishes a cache-WRITE column for GPT-6 Astra and every GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
-    "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate. This also applies within Anthropic: Claude 4.7 and later, which includes Fable 5.1, Opus 5.5, Sonnet 5, Opus 5 and Fable 5, use a newer tokenizer that produces about 30% more tokens for the same text than Sonnet 4.6 and earlier, which includes Haiku 4.5.",
+    "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate. This also applies within Anthropic: Claude 4.7 and later, which is every Claude model in this dataset except Haiku 4.5, use a newer tokenizer that produces about 30% more tokens for the same text than Sonnet 4.6 and earlier.",
     "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
     "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday to Friday. This dataset lists PEAK.",
@@ -81,7 +81,7 @@
       "output": 50.0,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23",
+      "verifiedAt": "2026-09-29",
       "note": "Cache hits are 0.025x input, a 97.5% discount, against the standard 0.1x."
     },
     {
@@ -93,8 +93,20 @@
       "output": 20.0,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23",
+      "verifiedAt": "2026-09-29",
       "note": "Cache hits are 0.05x input, a 95% discount, against the standard 0.1x. Cheaper than Opus 5 on every rate."
+    },
+    {
+      "id": "sonnet-5-5",
+      "provider": "Anthropic",
+      "name": "Claude Sonnet 5.5",
+      "input": 2.0,
+      "cachedInput": 0.2,
+      "output": 10.0,
+      "context": 1000000,
+      "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "verifiedAt": "2026-09-29",
+      "note": "Same rates as Sonnet 5 on every column, including the standard 0.1x cache hit."
     },
     {
       "id": "fable-5",
@@ -105,7 +117,7 @@
       "output": 50,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23"
+      "verifiedAt": "2026-09-29"
     },
     {
       "id": "opus-5",
@@ -116,7 +128,7 @@
       "output": 25,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23"
+      "verifiedAt": "2026-09-29"
     },
     {
       "id": "sonnet-5",
@@ -127,7 +139,7 @@
       "output": 10,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23",
+      "verifiedAt": "2026-09-29",
       "note": "Launched at 2.00/10.00 as introductory pricing through 2026-08-31. Anthropic cancelled the scheduled increase to 3.00/15.00; this is now the standard rate. Confirmed on the pricing page 2026-09-01."
     },
     {
@@ -139,7 +151,7 @@
       "output": 5,
       "context": 200000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-09-23"
+      "verifiedAt": "2026-09-29"
     },
     {
       "id": "gemini-3-1-pro",
