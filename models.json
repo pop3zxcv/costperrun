@@ -1,13 +1,13 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-29",
+  "lastUpdated": "2026-09-30",
   "notes": {
-    "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 (0.05x) and Claude Fable 5.1 (0.025x).",
-    "cacheWrites": "OpenAI publishes a cache-WRITE column for GPT-6 Astra and every GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
+    "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. OpenAI's GPT-6.1 Sol is 0.05x. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 (0.05x) and Claude Fable 5.1 (0.025x).",
+    "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-6 and GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
     "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate. This also applies within Anthropic: Claude 4.7 and later, which is every Claude model in this dataset except Haiku 4.5, use a newer tokenizer that produces about 30% more tokens for the same text than Sonnet 4.6 and earlier.",
     "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
-    "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
+    "longContext": "Three providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, GPT-6.1 Sol 2/10 -> 4/15, GPT-6 Luna 0.10/0.50 -> 0.20/0.75, Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday to Friday. This dataset lists PEAK.",
     "promotionalRates": "Gemini 3.6 Flash and 3.7 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
   },
@@ -35,7 +35,31 @@
       "output": 50.0,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-09-23"
+      "verifiedAt": "2026-09-30"
+    },
+    {
+      "id": "gpt-6-1-sol",
+      "provider": "OpenAI",
+      "name": "GPT-6.1 Sol",
+      "input": 2.0,
+      "cachedInput": 0.1,
+      "output": 10.0,
+      "context": 1050000,
+      "sourceUrl": "https://platform.openai.com/docs/pricing",
+      "verifiedAt": "2026-09-30",
+      "note": "Cache hits are 0.05x input, against OpenAI's usual 0.1x."
+    },
+    {
+      "id": "gpt-6-luna",
+      "provider": "OpenAI",
+      "name": "GPT-6 Luna",
+      "input": 0.1,
+      "cachedInput": 0.01,
+      "output": 0.5,
+      "context": 1050000,
+      "sourceUrl": "https://platform.openai.com/docs/pricing",
+      "verifiedAt": "2026-09-30",
+      "note": "Half of GPT-5.6 Luna on every rate."
     },
     {
       "id": "gpt-5-6-sol",
@@ -46,7 +70,7 @@
       "output": 20,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-09-05",
+      "verifiedAt": "2026-09-30",
       "note": "The 4.00/20.00 rate is promotional, described by OpenAI as available at least through 2026-11-21. No successor rate is published."
     },
     {
@@ -58,7 +82,7 @@
       "output": 12,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-09-05"
+      "verifiedAt": "2026-09-30"
     },
     {
       "id": "gpt-5-6-luna",
@@ -69,7 +93,7 @@
       "output": 1.2,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-09-05",
+      "verifiedAt": "2026-09-30",
       "note": "Price cut 80% on 2026-07-30"
     },
     {
