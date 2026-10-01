@@ -1,7 +1,7 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-30",
+  "lastUpdated": "2026-10-01",
   "notes": {
     "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. OpenAI's GPT-6.1 Sol is 0.05x. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 (0.05x) and Claude Fable 5.1 (0.025x).",
     "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-6 and GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
@@ -285,6 +285,18 @@
       "note": "PEAK rate. Off-peak is half (0.22/0.007/0.66). Peak is 01:00-04:00 and 06:00-10:00 UTC"
     },
     {
+      "id": "muse-spark-1-3",
+      "provider": "Meta",
+      "name": "Muse Spark 1.3",
+      "input": 1.25,
+      "cachedInput": 0.15,
+      "output": 4.25,
+      "context": 1048576,
+      "sourceUrl": "https://dev.meta.ai/docs/pricing-rate-limits",
+      "verifiedAt": "2026-10-01",
+      "note": "Standard tier, where prompts are not used for training. Meta states there is no long-context premium. Web search grounding is $2.50 per 1,000 queries on top, not modelled."
+    },
+    {
       "id": "kimi-k3",
       "provider": "Moonshot",
       "name": "Kimi K3",
@@ -326,6 +338,10 @@
     {
       "id": "claude-mythos-5-1",
       "reason": "Listed at 10.00/0.25/50.00. Excluded: limited availability, not generally purchasable. Same as claude-mythos-5."
+    },
+    {
+      "id": "muse-spark-1-3-contributor",
+      "reason": "Listed at 0.10 input / 0.002 cached / 0.20 output, but only in exchange for permission to train on your prompts and completions. Not comparable with the other rows, which assume your data is not used for training. Muse Spark 1.2 and 1.1 are on the Standard rates and were left out as superseded by 1.3."
     }
   ]
 }

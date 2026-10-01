@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Agent Cost Calculator | What one agent run actually costs</title>
-<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 23 models.">
+<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 24 models.">
 <link rel="canonical" href="https://costperrun.com/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#191919">
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://costperrun.com/">
 <meta property="og:site_name" content="Cost Per Run">
 <meta property="og:title" content="Your AI agent bills about 6x the tokens you would estimate">
-<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 23 models. Free, no signup.">
+<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 24 models. Free, no signup.">
 <meta property="og:image" content="https://costperrun.com/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -42,7 +42,7 @@
     "Models quadratic context accumulation across agent steps",
     "Retry rate and prompt cache hit rate modelling",
     "Cost attribution breakdown by component",
-    "Side-by-side comparison of 23 models",
+    "Side-by-side comparison of 24 models",
     "Per-step cost accumulation table",
     "Shareable URLs for any workload configuration"
   ]
@@ -536,7 +536,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
       <a class="btn" href="#method">Read the method</a>
     </div>
-    <p class="microcopy"><b>23 models</b> · No signup · Nothing leaves your browser</p>
+    <p class="microcopy"><b>24 models</b> · No signup · Nothing leaves your browser</p>
   </div>
 
   <div class="proof">
@@ -760,7 +760,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <details>
         <summary>Where do the prices come from?</summary>
-        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 30 September 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
+        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 1 October 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
       </details>
     </div>
   </div>
@@ -780,7 +780,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       </a>
       <p>Free. No signup. No tracking. No data leaves your browser.</p>
     </div>
-    <p>Model prices verified against provider announcements and pricing trackers as of <b>30 September 2026</b>. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are near 90% off input; Claude Opus 5.5 and GPT-6.1 Sol are 95% off and Claude Fable 5.1 is 97.5% off.</p>
+    <p>Model prices verified against provider announcements and pricing trackers as of <b>1 October 2026</b>. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are near 90% off input; Claude Opus 5.5 and GPT-6.1 Sol are 95% off and Claude Fable 5.1 is 97.5% off.</p>
   </div>
 </footer>
 
@@ -811,6 +811,7 @@ const MODELS=[
  {id:"grok-4-6",      p:"xAI",      n:"Grok 4.6",        i:2.00,  c:0.50,   o:6.00},
  {id:"grok-4-5",      p:"xAI",      n:"Grok 4.5",        i:2.00,  c:0.30,   o:6.00},
  {id:"grok-4-3",      p:"xAI",      n:"Grok 4.3",        i:1.25,  c:0.20,   o:2.50},
+ {id:"muse-spark-1-3",p:"Meta",     n:"Muse Spark 1.3",  i:1.25,  c:0.15,   o:4.25},
  {id:"kimi-k3",       p:"Moonshot", n:"Kimi K3",         i:3.00,  c:0.30,   o:15.00},
  {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96},
  {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4 Flash",i:0.44, c:0.014,  o:1.32}
