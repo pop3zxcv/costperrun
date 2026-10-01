@@ -376,6 +376,10 @@
     {
       "id": "grok-build-0.1",
       "reason": "Listed at 1.00/0.20/2.00 with 256K context. Excluded: a code-specialised model, an alias of the older grok-code-fast-1, not xAI's general agent model."
+    },
+    {
+      "id": "gemini-4-argon",
+      "reason": "Announced 2026-09-30 but not available to developers. Google is rolling it out to trusted cyber defenders through its Fairwind Program and says developer access comes later, starting with paid API customers. It is absent from the Gemini API pricing and models pages as of 2026-10-01. Google's announcement states an introductory 2.00 input / 10.00 output with cached input 95% off, rising to 4.00 / 20.00 after an introductory period whose end date it does not give. Add it once it appears on the pricing page with its own rates and context window."
     }
   ]
 }
