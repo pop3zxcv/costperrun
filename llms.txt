@@ -1,6 +1,6 @@
 # costperrun
 
-> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 23 models from OpenAI, Anthropic, Google, xAI, Moonshot and DeepSeek.
+> A free calculator for what one multi-step AI agent run actually costs. It models the quadratic growth in billed input tokens caused by an agent re-sending its entire context on every step, across 24 models from OpenAI, Anthropic, Google, Meta, xAI, Moonshot and DeepSeek.
 
 Language models are stateless. An agent must re-send its whole history on every step, so total input tokens across N steps come out as:
 
@@ -20,7 +20,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 ## Pages
 
-- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 23 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
+- [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 24 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
 - [Method and FAQ](https://costperrun.com/#method): Derivation of the formula, the worked example, the three levers ranked, and a plain statement of what the model does not cover.
 
 ## Data
@@ -40,7 +40,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 ## Notes
 
-- Prices verified 30 September 2026 against each provider's own pricing page.
+- Prices verified 1 October 2026 against each provider's own pricing page.
 - Cache-hit rates are taken from each provider's published price. Most are near 90% off input; Claude Opus 5.5 and GPT-6.1 Sol are 95% off and Claude Fable 5.1 is 97.5% off.
 - GPT-5.6 Sol's $4/$20 is promotional, described by OpenAI as available at least through 21 November 2026. No successor rate is published.
 - Claude Sonnet 5's $2/$10 was announced as introductory through 31 August 2026. Anthropic cancelled the scheduled increase to $3/$15 and $2/$10 is now the standard rate.
