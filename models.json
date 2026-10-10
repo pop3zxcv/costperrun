@@ -360,7 +360,7 @@
   "excluded": [
     {
       "id": "gpt-5-4-mini",
-      "reason": "Listed and generally available: 0.75/0.075/4.50, 400K context, checked 2026-09-05. The earlier reason recorded here, that it was retired and absent from OpenAI's pages, was wrong. Excluded now only as a superseded prior-generation model."
+      "reason": "Listed and generally available: 0.75/0.075/4.50, 400K context, checked 2026-09-05. Excluded as a superseded prior-generation model."
     },
     {
       "id": "gpt-5-4-nano",
@@ -392,7 +392,7 @@
     },
     {
       "id": "gemini-4-argon",
-      "reason": "Announced 2026-09-30 but not available to developers. Google is rolling it out to trusted cyber defenders through its Fairwind Program and says developer access comes later, starting with paid API customers. It is absent from the Gemini API pricing and models pages as of 2026-10-01. Google's announcement states an introductory 2.00 input / 10.00 output with cached input 95% off, rising to 4.00 / 20.00 after an introductory period whose end date it does not give. Add it once it appears on the pricing page with its own rates and context window."
+      "reason": "Announced 2026-09-30 but not available to developers. Google is rolling it out to trusted cyber defenders through its Fairwind Program and says developer access comes later, starting with paid API customers. It is absent from the Gemini API pricing and models pages as of 2026-10-01. Google's announcement states an introductory 2.00 input / 10.00 output with cached input 95% off, rising to 4.00 / 20.00 after an introductory period whose end date it does not give."
     },
     {
       "id": "gpt-6-sol",
