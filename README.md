@@ -6,7 +6,7 @@ A calculator that estimates what one multi-step AI agent run actually costs.
 
 ## The problem it solves
 
-Every other LLM cost calculator prices a single API request: input tokens times rate, plus output tokens times rate. That is correct for a chatbot.
+Most LLM cost calculators price a single API request: input tokens times rate, plus output tokens times rate. That is correct for a chatbot.
 
 An agent is not a chatbot. It makes dozens of calls in a loop, and because language models hold no state between calls, every step re-sends the entire conversation so far. Step 10 pays for steps 1 through 9 all over again.
 
