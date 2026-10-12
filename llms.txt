@@ -40,7 +40,7 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 ## Notes
 
-- Prices verified 10 October 2026 against each provider's own pricing page.
+- Prices verified 12 October 2026 against each provider's own pricing page.
 - Cache-hit rates are taken from each provider's published price. Most are near 90% off input; Claude Opus 5.5, Claude Sonnet 5.5 and GPT-6.1 Sol are 95% off and Claude Fable 5.1 is 97.5% off.
 - GPT-5.6 Sol's $4/$20 is promotional, described by OpenAI as available at least through 21 November 2026. No successor rate is published.
 - Claude Sonnet 5's $2/$10 was announced as introductory through 31 August 2026. Anthropic cancelled the scheduled increase to $3/$15 and $2/$10 is now the standard rate.
