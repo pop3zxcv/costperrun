@@ -1,7 +1,7 @@
 {
   "$comment": "Pricing dataset for costperrun.com. All prices are USD per 1,000,000 tokens. cachedInput is the cache-READ rate. Every entry carries a sourceUrl and a verifiedAt date.",
   "schemaVersion": 1,
-  "lastUpdated": "2026-10-12",
+  "lastUpdated": "2026-10-19",
   "notes": {
     "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 and Claude Sonnet 5.5 (0.05x) and Claude Fable 5.1 (0.025x). OpenAI's GPT-6.1 Sol is 0.05x.",
     "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-6 and GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
@@ -9,9 +9,15 @@
     "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
     "longContext": "Four providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. Claude Haiku 5.5 changes at 100K prompt tokens: 0.10/0.01/0.50 -> 0.50/0.05/2.50 for the whole request, cache reads counted toward the 100K. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, GPT-6.1 Sol 2/10 -> 4/15, GPT-6 Luna 0.10/0.50 -> 0.20/0.75, GPT-5.6 Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K. The other Claude models carry no long-context tier.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, excluding Chinese public holidays. All other hours are off-peak. This dataset lists PEAK.",
-    "promotionalRates": "Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
+    "promotionalRates": "Gemini 4 Argon is on an introductory rate through 2026-11-30 and doubles on 2026-12-01. Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
   },
   "pendingChanges": [
+    {
+      "date": "2026-12-01",
+      "model": "gemini-4-argon",
+      "change": "Introductory pricing ends. input 2.00 -> 4.00, output 10.00 -> 20.00, cachedInput 0.10 -> 0.20",
+      "action": "Scheduled provider price change. This dataset is updated on or before this date."
+    },
     {
       "date": "2027-01-01",
       "model": "gemini-3-6-fl",
@@ -41,7 +47,7 @@
       "output": 50.0,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12"
+      "verifiedAt": "2026-10-19"
     },
     {
       "id": "gpt-6-1-sol",
@@ -52,7 +58,7 @@
       "output": 10.0,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Cache hits are 0.05x input, against OpenAI's usual 0.1x."
     },
     {
@@ -64,7 +70,7 @@
       "output": 0.5,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Half of GPT-5.6 Luna on every rate."
     },
     {
@@ -76,7 +82,7 @@
       "output": 20,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "The 4.00/20.00 rate is promotional, described by OpenAI as available at least through 2026-11-21. No successor rate is published."
     },
     {
@@ -88,7 +94,7 @@
       "output": 12,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12"
+      "verifiedAt": "2026-10-19"
     },
     {
       "id": "gpt-5-6-luna",
@@ -99,7 +105,7 @@
       "output": 1.2,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Price cut 80% on 2026-07-30"
     },
     {
@@ -111,7 +117,7 @@
       "output": 50.0,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Cache hits are 0.025x input, a 97.5% discount, against the standard 0.1x."
     },
     {
@@ -123,7 +129,7 @@
       "output": 20.0,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Cache hits are 0.05x input, a 95% discount, against the standard 0.1x. Cheaper than Opus 5 on every rate."
     },
     {
@@ -135,7 +141,7 @@
       "output": 10.0,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Cache hits are 0.05x input (0.10), down from 0.20 as of 2026-10-10. Sonnet 5 keeps 0.20. Input and output rates are the same as Sonnet 5."
     },
     {
@@ -147,7 +153,7 @@
       "output": 50,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12"
+      "verifiedAt": "2026-10-19"
     },
     {
       "id": "opus-5",
@@ -158,7 +164,7 @@
       "output": 25,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12"
+      "verifiedAt": "2026-10-19"
     },
     {
       "id": "sonnet-5",
@@ -169,7 +175,7 @@
       "output": 10,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Launched at 2.00/10.00 as introductory pricing through 2026-08-31. Anthropic cancelled the scheduled increase to 3.00/15.00; this is now the standard rate. Confirmed on the pricing page 2026-09-01."
     },
     {
@@ -181,7 +187,7 @@
       "output": 0.5,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Base tier, for prompts up to 100,000 tokens. Prompts over 100,000 tokens are priced at 0.50 input / 0.05 cache hit / 2.50 output for the whole request, and cache reads count toward the 100K. Same base rates as GPT-6 Luna."
     },
     {
@@ -193,7 +199,19 @@
       "output": 5,
       "context": 200000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-12"
+      "verifiedAt": "2026-10-19"
+    },
+    {
+      "id": "gemini-4-argon",
+      "provider": "Google",
+      "name": "Gemini 4 Argon",
+      "input": 2.0,
+      "cachedInput": 0.1,
+      "output": 10.0,
+      "context": 1048576,
+      "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
+      "verifiedAt": "2026-10-19",
+      "note": "Generally available since 2026-10-13. Introductory rate through 2026-11-30, then 4.00 / 0.20 / 20.00 from 2026-12-01. The 1,048,576 context window is a unified input and output limit. Implicit caching only. Flat pricing, no long-context tier is listed."
     },
     {
       "id": "gemini-3-1-pro",
@@ -204,7 +222,7 @@
       "output": 12,
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Rises to 4.00/18.00 for long context"
     },
     {
@@ -216,7 +234,7 @@
       "output": 3.75,
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Promotional rate through 2026-12-31, then 1.50/0.15/7.50 from 2027-01-01. Same as Gemini 3.6 and 3.7 Flash."
     },
     {
@@ -228,7 +246,7 @@
       "output": 3.75,
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Deprecated 2026-10-08. Google routes every gemini-3.7-flash request to gemini-3.8-flash, so this is the 3.8 Flash rate. Kept so shared links still resolve. Doubles on 2027-01-01 like the other Flash models."
     },
     {
@@ -240,7 +258,7 @@
       "output": 3.75,
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Launched 2026-07-21"
     },
     {
@@ -252,7 +270,7 @@
       "output": 10,
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Rises to 2.50/15.00 above 200K context"
     },
     {
@@ -264,7 +282,7 @@
       "output": 6,
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Rates double at >=200K prompt tokens"
     },
     {
@@ -276,7 +294,7 @@
       "output": 6.0,
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Same rates as Grok 4.6. Rates double for requests of 200K prompt tokens or more."
     },
     {
@@ -288,7 +306,7 @@
       "output": 6,
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Current flagship. Rates double at >=200K prompt tokens"
     },
     {
@@ -300,7 +318,7 @@
       "output": 2.5,
       "context": 1000000,
       "sourceUrl": "https://docs.x.ai/docs/models",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Rates double at >=200K prompt tokens"
     },
     {
@@ -312,7 +330,7 @@
       "output": 3.96,
       "context": 1000000,
       "sourceUrl": "https://api-docs.deepseek.com/quick_start/pricing",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "PEAK rate. Off-peak is half (0.66/0.022/1.98). Peak is 01:00-04:00 and 06:00-10:00 UTC"
     },
     {
@@ -324,8 +342,20 @@
       "output": 1.2,
       "context": 1000000,
       "sourceUrl": "https://api-docs.deepseek.com/quick_start/pricing",
-      "verifiedAt": "2026-10-12",
-      "note": "Peak rates. The id is kept so shared links still resolve. DeepSeek retired the V4 Flash model and serves the old deepseek-v4-flash name from V4.1 Flash at the Flash price. Previous rates here were 0.44 / 0.014 / 1.32."
+      "verifiedAt": "2026-10-19",
+      "note": "Peak rates. The id is kept so shared links still resolve. DeepSeek retired the V4 Flash model and serves the old deepseek-v4-flash name from V4.1 Flash at the Flash price. Previous rates here were 0.44 / 0.014 / 1.32. Served as DeepSeek-V4.1-Flash-1017 on 2026-10-19; the snapshot changed, the rates did not."
+    },
+    {
+      "id": "muse-wonder-1-0",
+      "provider": "Meta",
+      "name": "Muse Wonder 1.0",
+      "input": 4.0,
+      "cachedInput": 0.2,
+      "output": 20.0,
+      "context": 1048576,
+      "sourceUrl": "https://dev.meta.ai/docs/pricing-rate-limits",
+      "verifiedAt": "2026-10-19",
+      "note": "In preview. Standard mode only on pay-as-you-go, so the rate assumes your prompts are not used for training, like every other row. Meta positions it for long, complex agent runs and says there is no long-context premium. Muse Wonder Full is excluded: Muse Code subscribers only."
     },
     {
       "id": "muse-spark-1-3",
@@ -336,7 +366,7 @@
       "output": 4.25,
       "context": 1048576,
       "sourceUrl": "https://dev.meta.ai/docs/pricing-rate-limits",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Standard tier, where prompts are not used for training. Meta states there is no long-context premium. Web search grounding is $2.50 per 1,000 queries on top, not modelled."
     },
     {
@@ -348,7 +378,7 @@
       "output": 15,
       "context": 1048576,
       "sourceUrl": "https://platform.kimi.ai/docs/pricing/chat-k3",
-      "verifiedAt": "2026-10-12",
+      "verifiedAt": "2026-10-19",
       "note": "Flat across the full context window, no long-context tier"
     }
   ],
@@ -391,12 +421,12 @@
       "reason": "Listed at 1.00/0.20/2.00 with 256K context. Excluded: a code-specialised model, an alias of the older grok-code-fast-1, not xAI's general agent model."
     },
     {
-      "id": "gemini-4-argon",
-      "reason": "Announced 2026-09-30 but not available to developers. Google is rolling it out to trusted cyber defenders through its Fairwind Program and says developer access comes later, starting with paid API customers. It is absent from the Gemini API pricing and models pages as of 2026-10-01. Google's announcement states an introductory 2.00 input / 10.00 output with cached input 95% off, rising to 4.00 / 20.00 after an introductory period whose end date it does not give."
-    },
-    {
       "id": "gpt-6-sol",
       "reason": "Listed on OpenAI's model page at 2.00 input / 10.00 output, which the page describes as superseded by GPT-6.1 Sol at the same headline price. Not in the pricing table. GPT-6.1 Sol is in the dataset."
+    },
+    {
+      "id": "muse-wonder-full",
+      "reason": "Higher-capability Muse Wonder variant. Not on Meta's Model API: available only in Muse Code on the Power Usage and Maximum Usage subscription plans, so there is no per-token price to cite."
     }
   ]
 }
