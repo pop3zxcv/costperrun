@@ -408,6 +408,12 @@ td.m{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
 .mname{font-weight:500}
 .prov{display:block;font-size:11px;color:var(--dim-2);margin-top:2px;font-weight:400}
 .best{color:var(--accent)}
+.tag{display:inline-flex;align-items:center;gap:4px;margin-left:6px;color:var(--amber);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.ico{flex:none;display:inline-block;vertical-align:-2px}
+.promo-note{list-style:none;margin:0;padding:12px 14px 14px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:12.5px;line-height:1.5;color:var(--dim)}
+.promo-note:empty{display:none}
+.promo-note li{display:flex;gap:8px;align-items:flex-start}
+.promo-note .ico{color:var(--amber);margin-top:2px}
 .bar-cell{width:120px;min-width:120px}
 .bar{height:5px;border-radius:0;background:var(--blue);opacity:.6;min-width:3px}
 .skip td{color:var(--dim-2);font-family:var(--mono);font-size:11px;padding:6px 14px;letter-spacing:.1em}
@@ -678,6 +684,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
         <tbody id="cmp"></tbody>
       </table>
       </div>
+      <ul class="promo-note" id="promoNote" aria-label="Promotional prices that are due to change"></ul>
     </div>
 
     <div class="card">
@@ -821,6 +828,23 @@ const MODELS=[
  {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96},
  {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4.1 Flash",i:0.30, c:0.006, o:1.20}
 ];
+
+/* Promotional rates, mirrored from models.json (pendingChanges, and the GPT-5.6 Sol note).
+   end: last day of the promotion. next: published rate after it. atLeast: the provider only
+   says "at least through" this date and publishes no successor rate. */
+const PROMO={
+ "gemini-4-argon":{end:"2026-11-30",next:{i:4.00,c:0.20,o:20.00}},
+ "gemini-3-8-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
+ "gemini-3-7-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
+ "gemini-3-6-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
+ "gpt-5-6-sol"   :{end:"2026-11-21",atLeast:true}
+};
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const dmy=iso=>{const [y,m,d]=iso.split("-").map(Number);return d+" "+MON[m-1];};
+const dayAfter=iso=>{const t=new Date(iso+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+1);return t.toISOString().slice(0,10);};
+/* clock icon: Lucide (ISC licence), inlined so the CSP still blocks every outbound request */
+const ICO_CLOCK='<svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+const promoLabel=id=>{const q=PROMO[id]; if(!q) return ""; return q.atLeast? "promo, at least to "+dmy(q.end) : "promo to "+dmy(q.end);};
 
 const PRESETS={
  "Coding agent"    :{S:6000,U:1500,N:25,O:800, T:3000,R:15,C:60},
@@ -999,12 +1023,24 @@ function render(){
     const mult=row.t/min;
     return `<tr>
       <td class="rank">${String(k+1).padStart(2,"0")}</td>
-      <td><span class="mname${k===0?' best':''}">${row.x.n}</span><span class="prov">${row.x.p}</span></td>
+      <td><span class="mname${k===0?' best':''}">${row.x.n}</span><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}</span></td>
       <td class="r m">${money(row.t)}</td>
       <td class="r m">${money(row.t*D*30)}</td>
       <td class="r m" style="color:${mult<2?'var(--accent)':mult<8?'var(--amber)':'var(--red)'}">${mult.toFixed(1)}×</td>
       <td class="bar-cell"><div class="bar" style="width:${Math.max(3,row.t/max*100)}%"></div></td>
     </tr>`;}).join("");
+
+  const groups={};
+  MODELS.filter(x=>PROMO[x.id]).forEach(x=>{const q=PROMO[x.id];
+    const key=q.atLeast? "a|"+q.end+"|"+x.id : q.end+"|"+q.next.i+"|"+q.next.c+"|"+q.next.o;
+    (groups[key]=groups[key]||{q,xs:[]}).xs.push(x);});
+  $("promoNote").innerHTML=Object.values(groups).sort((a,b)=>a.q.end<b.q.end?-1:1).map(g=>{
+    const names=g.xs.map(x=>x.n.replace(/ \(routed to [^)]*\)/,""));
+    const who=names.length>1? names.slice(0,-1).join(", ")+" and "+names[names.length-1] : names[0];
+    if(g.q.atLeast) return `<li>${ICO_CLOCK}<span>${who}: the ${money(g.xs[0].i)} / ${money(g.xs[0].o)} rate is promotional, at least through ${dmy(g.q.end)}. No rate after it is published yet.</span></li>`;
+    const after=calc({...g.xs[0],...g.q.next},p).total;
+    return `<li>${ICO_CLOCK}<span>${who} ${names.length>1?"rise":"rises"} to ${money(g.q.next.i)} / ${money(g.q.next.o)} on ${dmy(dayAfter(g.q.end))}: ${money(after)} a run on this workload, from ${money(calc(g.xs[0],p).total)}.</span></li>`;
+  }).join("");
 
   const st=r.steps, keep=st.length<=14? st.map((_,i)=>i)
     : [...new Set([0,1,2,3,Math.floor(st.length*.25),Math.floor(st.length*.5),Math.floor(st.length*.75),st.length-2,st.length-1])].sort((a,b)=>a-b);
@@ -1022,7 +1058,7 @@ function render(){
 }
 
 /* ---- build UI ---- */
-$("M").innerHTML=MODELS.map((m,i)=>`<option value="${i}">${m.n} · ${m.p}</option>`).join("");
+$("M").innerHTML=MODELS.map((m,i)=>`<option value="${i}">${m.n} · ${m.p}${PROMO[m.id]?" · "+promoLabel(m.id):""}</option>`).join("");
 $("M").value=MODELS.findIndex(x=>x.id===DEFAULTS.m);
 $("presets").innerHTML=Object.keys(PRESETS).map(k=>`<button class="preset" type="button" data-k="${k}">${k}</button>`).join("");
 
