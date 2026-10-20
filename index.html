@@ -866,7 +866,7 @@ const PROMO={
  "gpt-5-6-sol"   :{end:"2026-11-21",atLeast:true}
 };
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const dmy=iso=>{const [y,m,d]=iso.split("-").map(Number);return d+" "+MON[m-1];};
+const dmy=iso=>{const [y,m,d]=iso.split("-").map(Number);return d+"\u00a0"+MON[m-1];};  /* no-break space: a date never splits across lines */
 const dayAfter=iso=>{const t=new Date(iso+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+1);return t.toISOString().slice(0,10);};
 /* Icons: Lucide 1.59.0 (ISC licence), paths copied verbatim and inlined so the CSP
    still blocks every outbound request. 1.5px stroke, sized per use, colour from currentColor. */
