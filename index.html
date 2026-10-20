@@ -368,7 +368,7 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
   .cmp-tbl th:nth-child(4),.cmp-tbl td:nth-child(4),.cmp-tbl th:nth-child(6),.cmp-tbl td:nth-child(6){display:none}
   .cmp-tbl th,.cmp-tbl td{padding-left:10px;padding-right:10px}
   .cmp-tbl td:nth-child(2){white-space:normal}
-  .cmp-tbl .tag{white-space:normal;margin-left:0;display:flex;margin-top:2px}
+  .cmp-tbl .tag,.cmp-tbl .flag{white-space:normal;margin-left:0;display:flex;margin-top:2px}
   .step-tbl th:nth-child(5),.step-tbl td:nth-child(5){display:none}
   .step-tbl th,.step-tbl td{padding-left:10px;padding-right:10px}
   .step-tbl th{white-space:normal;vertical-align:bottom}
@@ -439,6 +439,11 @@ tr.detail td{padding-top:0;white-space:normal}
 .promo-note:empty{display:none}
 .promo-note li{display:flex;gap:8px;align-items:flex-start}
 .promo-note .ico{color:var(--amber);margin-top:2px}
+.promo-note a{color:var(--txt);text-decoration:underline;text-underline-offset:3px}
+.flag{display:inline-flex;align-items:center;gap:4px;margin-left:6px;color:var(--amber);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.flag.bad{color:var(--red)}
+.promo-note li.bad .ico{color:var(--red)}
+tr.nofit td,tr.nofit .mname,tr.nofit .prov{color:var(--dim-2)}
 .bar-cell{width:120px;min-width:120px}
 .bar{height:5px;border-radius:0;background:var(--blue);opacity:.6;min-width:3px}
 .skip td{color:var(--dim-2);font-family:var(--mono);font-size:11px;padding:6px 14px;letter-spacing:.1em}
@@ -824,35 +829,35 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
 <script>
 const MODELS=[
- {id:"gpt-6-astra",   p:"OpenAI",   n:"GPT-6 Astra",     i:10.00, c:1.00,   o:50.00},
- {id:"gpt-6-1-sol",   p:"OpenAI",   n:"GPT-6.1 Sol",     i:2.00,  c:0.10,   o:10.00},
- {id:"gpt-6-luna",    p:"OpenAI",   n:"GPT-6 Luna",      i:0.10,  c:0.01,   o:0.50},
- {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:4.00,  c:0.40,   o:20.00},
- {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.00,  c:0.20,   o:12.00},
- {id:"gpt-5-6-luna",  p:"OpenAI",   n:"GPT-5.6 Luna",    i:0.20,  c:0.02,   o:1.20},
- {id:"fable-5-1",     p:"Anthropic",n:"Claude Fable 5.1",i:10.00, c:0.25,   o:50.00},
- {id:"opus-5-5",      p:"Anthropic",n:"Claude Opus 5.5", i:4.00,  c:0.20,   o:20.00},
- {id:"sonnet-5-5",    p:"Anthropic",n:"Claude Sonnet 5.5",i:2.00, c:0.10,   o:10.00},
- {id:"fable-5",       p:"Anthropic",n:"Claude Fable 5",  i:10.00, c:1.00,   o:50.00},
- {id:"opus-5",        p:"Anthropic",n:"Claude Opus 5",   i:5.00,  c:0.50,   o:25.00},
- {id:"sonnet-5",      p:"Anthropic",n:"Claude Sonnet 5", i:2.00,  c:0.20,   o:10.00},
- {id:"haiku-5-5",     p:"Anthropic",n:"Claude Haiku 5.5",i:0.10,  c:0.01,   o:0.50},
- {id:"haiku-4-5",     p:"Anthropic",n:"Claude Haiku 4.5",i:1.00,  c:0.10,   o:5.00},
- {id:"gemini-4-argon",p:"Google",   n:"Gemini 4 Argon",  i:2.00,  c:0.10,   o:10.00},
- {id:"gemini-3-1-pro",p:"Google",   n:"Gemini 3.1 Pro",  i:2.00,  c:0.20,   o:12.00},
- {id:"gemini-3-8-fl", p:"Google",   n:"Gemini 3.8 Flash",i:0.75,  c:0.075,  o:3.75},
- {id:"gemini-3-7-fl", p:"Google",   n:"Gemini 3.7 Flash (routed to 3.8)",i:0.75,  c:0.075,  o:3.75},
- {id:"gemini-3-6-fl", p:"Google",   n:"Gemini 3.6 Flash",i:0.75,  c:0.075,  o:3.75},
- {id:"gemini-2-5-pro",p:"Google",   n:"Gemini 2.5 Pro",  i:1.25,  c:0.125,  o:10.00},
- {id:"grok-4-7",      p:"xAI",      n:"Grok 4.7",        i:2.00,  c:0.50,   o:6.00},
- {id:"grok-4-6",      p:"xAI",      n:"Grok 4.6",        i:2.00,  c:0.50,   o:6.00},
- {id:"grok-4-5",      p:"xAI",      n:"Grok 4.5",        i:2.00,  c:0.30,   o:6.00},
- {id:"grok-4-3",      p:"xAI",      n:"Grok 4.3",        i:1.25,  c:0.20,   o:2.50},
- {id:"muse-wonder-1-0",p:"Meta",    n:"Muse Wonder 1.0", i:4.00,  c:0.20,   o:20.00},
- {id:"muse-spark-1-3",p:"Meta",     n:"Muse Spark 1.3",  i:1.25,  c:0.15,   o:4.25},
- {id:"kimi-k3",       p:"Moonshot", n:"Kimi K3",         i:3.00,  c:0.30,   o:15.00},
- {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96},
- {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4.1 Flash",i:0.30, c:0.006, o:1.20}
+ {id:"gpt-6-astra",   p:"OpenAI",   n:"GPT-6 Astra",     i:10.00, c:1.00,   o:50.00, w:1050000},
+ {id:"gpt-6-1-sol",   p:"OpenAI",   n:"GPT-6.1 Sol",     i:2.00,  c:0.10,   o:10.00, w:1050000},
+ {id:"gpt-6-luna",    p:"OpenAI",   n:"GPT-6 Luna",      i:0.10,  c:0.01,   o:0.50, w:1050000},
+ {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:4.00,  c:0.40,   o:20.00, w:1050000},
+ {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.00,  c:0.20,   o:12.00, w:1050000},
+ {id:"gpt-5-6-luna",  p:"OpenAI",   n:"GPT-5.6 Luna",    i:0.20,  c:0.02,   o:1.20, w:1050000},
+ {id:"fable-5-1",     p:"Anthropic",n:"Claude Fable 5.1",i:10.00, c:0.25,   o:50.00, w:1000000},
+ {id:"opus-5-5",      p:"Anthropic",n:"Claude Opus 5.5", i:4.00,  c:0.20,   o:20.00, w:1000000},
+ {id:"sonnet-5-5",    p:"Anthropic",n:"Claude Sonnet 5.5",i:2.00, c:0.10,   o:10.00, w:1000000},
+ {id:"fable-5",       p:"Anthropic",n:"Claude Fable 5",  i:10.00, c:1.00,   o:50.00, w:1000000},
+ {id:"opus-5",        p:"Anthropic",n:"Claude Opus 5",   i:5.00,  c:0.50,   o:25.00, w:1000000},
+ {id:"sonnet-5",      p:"Anthropic",n:"Claude Sonnet 5", i:2.00,  c:0.20,   o:10.00, w:1000000},
+ {id:"haiku-5-5",     p:"Anthropic",n:"Claude Haiku 5.5",i:0.10,  c:0.01,   o:0.50, w:1000000},
+ {id:"haiku-4-5",     p:"Anthropic",n:"Claude Haiku 4.5",i:1.00,  c:0.10,   o:5.00, w:200000},
+ {id:"gemini-4-argon",p:"Google",   n:"Gemini 4 Argon",  i:2.00,  c:0.10,   o:10.00, w:1048576},
+ {id:"gemini-3-1-pro",p:"Google",   n:"Gemini 3.1 Pro",  i:2.00,  c:0.20,   o:12.00, w:1048576},
+ {id:"gemini-3-8-fl", p:"Google",   n:"Gemini 3.8 Flash",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-3-7-fl", p:"Google",   n:"Gemini 3.7 Flash (routed to 3.8)",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-3-6-fl", p:"Google",   n:"Gemini 3.6 Flash",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-2-5-pro",p:"Google",   n:"Gemini 2.5 Pro",  i:1.25,  c:0.125,  o:10.00, w:1048576},
+ {id:"grok-4-7",      p:"xAI",      n:"Grok 4.7",        i:2.00,  c:0.50,   o:6.00, w:500000},
+ {id:"grok-4-6",      p:"xAI",      n:"Grok 4.6",        i:2.00,  c:0.50,   o:6.00, w:500000},
+ {id:"grok-4-5",      p:"xAI",      n:"Grok 4.5",        i:2.00,  c:0.30,   o:6.00, w:500000},
+ {id:"grok-4-3",      p:"xAI",      n:"Grok 4.3",        i:1.25,  c:0.20,   o:2.50, w:1000000},
+ {id:"muse-wonder-1-0",p:"Meta",    n:"Muse Wonder 1.0", i:4.00,  c:0.20,   o:20.00, w:1048576},
+ {id:"muse-spark-1-3",p:"Meta",     n:"Muse Spark 1.3",  i:1.25,  c:0.15,   o:4.25, w:1048576},
+ {id:"kimi-k3",       p:"Moonshot", n:"Kimi K3",         i:3.00,  c:0.30,   o:15.00, w:1048576},
+ {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96, w:1000000},
+ {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4.1 Flash",i:0.30, c:0.006, o:1.20, w:1000000}
 ];
 
 /* Promotional rates, mirrored from models.json (pendingChanges, and the GPT-5.6 Sol note).
@@ -889,6 +894,27 @@ const SOURCES={
 const VERIFIED="2026-10-19";
 const rate=v=>{let t=v.toFixed(3).replace(/0$/,""); return "$"+t;};
 const OPEN=new Set();
+/* Long-context price tiers, mirrored from models.json notes.longContext. A request whose prompt
+   passes "at" tokens is billed at a higher rate for the whole request. ge: the provider says
+   "200K or more" rather than "over 200K". The table flags rows that cross a tier; it does not
+   reprice them yet, so a flagged figure understates the bill. */
+const TIERS={
+ "haiku-5-5"     :{at:100000},
+ "gpt-6-astra"   :{at:272000}, "gpt-6-1-sol":{at:272000}, "gpt-6-luna":{at:272000},
+ "gpt-5-6-sol"   :{at:272000}, "gpt-5-6-terra":{at:272000}, "gpt-5-6-luna":{at:272000},
+ "gemini-3-1-pro":{at:200000}, "gemini-2-5-pro":{at:200000},
+ "grok-4-7"      :{at:200000,ge:true}, "grok-4-6":{at:200000,ge:true}, "grok-4-5":{at:200000,ge:true}, "grok-4-3":{at:200000,ge:true}
+};
+const ICO_ALERT=ico('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>');
+const kTok=v=>v>=1e6? (v/1e6).toFixed(2).replace(/\.?0+$/,"")+"M" : Math.round(v/1000)+"K";
+/* the prompt sent at step i, and what one run asks of a model */
+const promptAt=(p,i)=>p.S+p.U+(i-1)*(p.O+p.T);
+function limits(m,p){
+  const need=promptAt(p,p.N)+p.O;               /* largest request: last prompt plus its output */
+  const t=TIERS[m.id]; let tierStep=0;
+  if(t) for(let i=1;i<=p.N;i++){ const x=promptAt(p,i); if(t.ge? x>=t.at : x>t.at){ tierStep=i; break; } }
+  return {need, fits:need<=m.w, tierStep};
+}
 const promoLabel=id=>{const q=PROMO[id]; if(!q) return ""; return q.atLeast? "promo, at least to "+dmy(q.end) : "promo to "+dmy(q.end);};
 
 const PRESETS={
@@ -962,7 +988,7 @@ function readURL(){
 
 function markdown(){
   const p=read(), D=+$("D").value||0, m=MODELS[+$("M").value], r=calc(m,p);
-  const rows=MODELS.map(x=>({x,t:calc(x,p).total})).sort((a,b)=>a.t-b.t).slice(0,5);
+  const rows=MODELS.filter(x=>limits(x,p).fits).map(x=>({x,t:calc(x,p).total})).sort((a,b)=>a.t-b.t).slice(0,5);
   const raw=p.S+p.U+p.N*(p.O+p.T);
   return `## Agent cost estimate: ${m.n}
 
@@ -1060,19 +1086,25 @@ function render(){
     msg=`Costs are balanced between context and output. Halving your step count to ${Math.max(1,Math.round(p.N/2))} would take this to <b>${money(halfSteps)}</b> per run, ${Math.round((1-halfSteps/r.total)*100)}% less. Step count is superlinear, so it is the strongest single lever.`;
   }
   if(p.R>0) msg+=` A ${$("R").value}% retry rate is quietly adding ${money(r.total-r.total/(1+p.R))} per run.`;
+  const Lm=limits(m,p);
+  if(!Lm.fits) msg=`<b>${m.n} cannot run this workload.</b> The last request needs ${kTok(Lm.need)} tokens and its context window is ${kTok(m.w)}. The figure below assumes it could. `+msg;
+  else if(Lm.tierStep) msg=`<b>From step ${Lm.tierStep} this run crosses ${m.n}'s long-context price tier.</b> The figure uses the base rate, so the real bill is higher. `+msg;
   $("insight").innerHTML=msg;
 
-  const rows=MODELS.map(x=>({x,t:calc(x,p).total})).sort((a,b)=>a.t-b.t);
-  const min=rows[0].t, max=rows[rows.length-1].t;
+  const rows=MODELS.map(x=>({x,t:calc(x,p).total,L:limits(x,p)}))
+    .sort((a,b)=>(b.L.fits-a.L.fits)||(a.t-b.t));
+  const ok=rows.filter(r=>r.L.fits), min=(ok[0]||rows[0]).t, max=Math.max(...rows.map(r=>r.t));
   $("cmp").innerHTML=rows.map((row,k)=>{
     const mult=row.t/min;
-    const open=OPEN.has(row.x.id), did="d-"+row.x.id;
-    return `<tr>
-      <td class="rank">${String(k+1).padStart(2,"0")}</td>
-      <td><button type="button" class="mbtn" data-id="${row.x.id}" aria-expanded="${open}" aria-controls="${did}">${ICO_CHEV}<span class="mname${k===0?' best':''}">${row.x.n}</span></button><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}</span></td>
+    const open=OPEN.has(row.x.id), did="d-"+row.x.id, L=row.L;
+    const flags=(!L.fits? ` <span class="flag bad">${ICO_ALERT}needs ${kTok(L.need)}, window is ${kTok(row.x.w)}</span>`:"")+
+      (L.fits&&L.tierStep? ` <span class="flag">${ICO_ALERT}rate rises at step ${L.tierStep}</span>`:"");
+    return `<tr${L.fits?"":' class="nofit"'}>
+      <td class="rank">${L.fits? String(k+1).padStart(2,"0") : "–"}</td>
+      <td><button type="button" class="mbtn" data-id="${row.x.id}" aria-expanded="${open}" aria-controls="${did}">${ICO_CHEV}<span class="mname${k===0&&L.fits?' best':''}">${row.x.n}</span></button><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}${flags}</span></td>
       <td class="r m">${money(row.t)}</td>
       <td class="r m">${money(row.t*D*30)}</td>
-      <td class="r m" style="color:${mult<2?'var(--accent)':mult<8?'var(--amber)':'var(--red)'}">${mult.toFixed(1)}×</td>
+      <td class="r m" style="color:${!L.fits?'var(--dim-2)':mult<2?'var(--accent)':mult<8?'var(--amber)':'var(--red)'}">${L.fits? mult.toFixed(1)+"×" : "–"}</td>
       <td class="bar-cell"><div class="bar" style="width:${Math.max(3,row.t/max*100)}%"></div></td>
     </tr>`+(open?`<tr class="detail" id="${did}"><td></td><td colspan="5"><div class="dwrap">
       <span class="m">${rate(row.x.i)}</span> input · <span class="m">${rate(row.x.c)}</span> cached · <span class="m">${rate(row.x.o)}</span> output, per 1M tokens.
@@ -1084,7 +1116,10 @@ function render(){
   MODELS.filter(x=>PROMO[x.id]).forEach(x=>{const q=PROMO[x.id];
     const key=q.atLeast? "a|"+q.end+"|"+x.id : q.end+"|"+q.next.i+"|"+q.next.c+"|"+q.next.o;
     (groups[key]=groups[key]||{q,xs:[]}).xs.push(x);});
-  $("promoNote").innerHTML=Object.values(groups).sort((a,b)=>a.q.end<b.q.end?-1:1).map(g=>{
+  const nNo=rows.filter(r=>!r.L.fits).length, nTier=rows.filter(r=>r.L.fits&&r.L.tierStep).length;
+  const flagNote=(nNo? `<li class="bad">${ICO_ALERT}<span>${nNo} ${nNo>1?"models":"model"} cannot run this workload: the last request needs ${kTok(rows.find(r=>!r.L.fits).L.need)} tokens, more than the context window. ${nNo>1?"They are":"It is"} greyed out and left unranked.</span></li>`:"")+
+    (nTier? `<li>${ICO_ALERT}<span>${nTier} ${nTier>1?"models cross a":"model crosses a"} long-context price tier during this run, marked "rate rises at step N". The table uses the base rate, so ${nTier>1?"their figures understate":"its figure understates"} the bill. See the limitations under <a href="#method">Method</a>.</span></li>`:"");
+  $("promoNote").innerHTML=flagNote+Object.values(groups).sort((a,b)=>a.q.end<b.q.end?-1:1).map(g=>{
     const names=g.xs.map(x=>x.n.replace(/ \(routed to [^)]*\)/,""));
     const who=names.length>1? names.slice(0,-1).join(", ")+" and "+names[names.length-1] : names[0];
     if(g.q.atLeast) return `<li>${ICO_CLOCK}<span>${who}: the ${money(g.xs[0].i)} / ${money(g.xs[0].o)} rate is promotional, at least through ${dmy(g.q.end)}. No rate after it is published yet.</span></li>`;
