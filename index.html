@@ -362,6 +362,16 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
 @media(max-width:640px){
   .figs{grid-template-columns:1fr 1fr;gap:18px}
   .fig:first-child{grid-column:1/-1}
+  /* Phones: the comparison table keeps rank, model, per run and vs. best. Per month is in the
+     sticky bar for the selected model, and the bar column carries no scale. Without this the
+     table is 645px wide in a 325px scroller and clips the per-run figures mid-digit. */
+  .cmp-tbl th:nth-child(4),.cmp-tbl td:nth-child(4),.cmp-tbl th:nth-child(6),.cmp-tbl td:nth-child(6){display:none}
+  .cmp-tbl th,.cmp-tbl td{padding-left:10px;padding-right:10px}
+  .cmp-tbl td:nth-child(2){white-space:normal}
+  .cmp-tbl .tag{white-space:normal;margin-left:0;display:flex;margin-top:2px}
+  .step-tbl th:nth-child(5),.step-tbl td:nth-child(5){display:none}
+  .step-tbl th,.step-tbl td{padding-left:10px;padding-right:10px}
+  .step-tbl th{white-space:normal;vertical-align:bottom}
 }
 
 .acts{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
@@ -412,8 +422,8 @@ td.m{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
 .best{color:var(--accent)}
 .report{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--txt);text-decoration:underline;text-underline-offset:3px}
 .report:hover{color:var(--accent)}
-.mbtn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--txt)}
-.mbtn .ico{color:var(--dim-2);transition:transform var(--d-fast) var(--ease-out)}
+.mbtn{all:unset;cursor:pointer;display:inline-flex;align-items:flex-start;gap:6px;color:var(--txt)}
+.mbtn .ico{color:var(--dim-2);margin-top:3px;transition:transform var(--d-fast) var(--ease-out)}
 .mbtn[aria-expanded="true"] .ico{transform:rotate(90deg)}
 .mbtn:hover .mname{text-decoration:underline;text-underline-offset:3px}
 .mbtn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
@@ -691,7 +701,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
     <div class="card">
       <div class="card-head"><h3>Same workload, every model</h3></div>
       <div class="scroll">
-      <table>
+      <table class="cmp-tbl">
         <thead><tr>
           <th class="rank"></th><th>Model</th><th class="r">Per run</th>
           <th class="r">Per month</th><th class="r">vs. best</th><th class="bar-cell"></th>
@@ -705,7 +715,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
     <div class="card">
       <div class="card-head"><h3>Cost accumulation by step</h3></div>
       <div class="scroll">
-      <table>
+      <table class="step-tbl">
         <thead><tr>
           <th>Step</th><th class="r">Context sent</th><th class="r">Step cost</th>
           <th class="r">Running total</th><th class="bar-cell"></th>
