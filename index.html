@@ -121,6 +121,8 @@
   --max:1200px;
   --shadow-btn:0 0 0 1px rgba(255,255,255,.2),0 0 24px rgba(0,0,0,.2);
   --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --d-fast:160ms; --d-base:240ms;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -408,6 +410,19 @@ td.m{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
 .mname{font-weight:500}
 .prov{display:block;font-size:11px;color:var(--dim-2);margin-top:2px;font-weight:400}
 .best{color:var(--accent)}
+.report{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--txt);text-decoration:underline;text-underline-offset:3px}
+.report:hover{color:var(--accent)}
+.mbtn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--txt)}
+.mbtn .ico{color:var(--dim-2);transition:transform var(--d-fast) var(--ease-out)}
+.mbtn[aria-expanded="true"] .ico{transform:rotate(90deg)}
+.mbtn:hover .mname{text-decoration:underline;text-underline-offset:3px}
+.mbtn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+tr.detail td{padding-top:0;white-space:normal}
+.dwrap{font-size:12.5px;line-height:1.6;color:var(--dim);padding:0 0 4px 18px;animation:dIn var(--d-base) var(--ease-out)}
+.dwrap .m{color:var(--txt)}
+.dwrap a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+@keyframes dIn{from{opacity:0;transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.dwrap{animation:none}.mbtn .ico{transition:none}}
 .tag{display:inline-flex;align-items:center;gap:4px;margin-left:6px;color:var(--amber);font-family:var(--mono);font-size:11px;white-space:nowrap}
 .ico{flex:none;display:inline-block;vertical-align:-2px}
 .promo-note{list-style:none;margin:0;padding:12px 14px 14px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:12.5px;line-height:1.5;color:var(--dim)}
@@ -786,8 +801,9 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
         costperrun
       </a>
       <p>Free. No signup. No tracking. No data leaves your browser.</p>
+      <a class="report" href="https://github.com/pop3zxcv/costperrun/issues" rel="noopener noreferrer" target="_blank"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>Report a stale price</a>
     </div>
-    <p>Model prices verified against provider announcements and pricing trackers as of <b>19 October 2026</b>. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are near 90% off input; Claude Opus 5.5, Claude Sonnet 5.5 and GPT-6.1 Sol are 95% off and Claude Fable 5.1 is 97.5% off.</p>
+    <p>Model prices checked against each provider's own pricing page on <b>19 October 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
   </div>
 </footer>
 
@@ -842,8 +858,27 @@ const PROMO={
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const dmy=iso=>{const [y,m,d]=iso.split("-").map(Number);return d+" "+MON[m-1];};
 const dayAfter=iso=>{const t=new Date(iso+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+1);return t.toISOString().slice(0,10);};
-/* clock icon: Lucide (ISC licence), inlined so the CSP still blocks every outbound request */
-const ICO_CLOCK='<svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+/* Icons: Lucide 1.59.0 (ISC licence), paths copied verbatim and inlined so the CSP
+   still blocks every outbound request. 1.5px stroke, sized per use, colour from currentColor. */
+const ico=(d,sz=14)=>`<svg class="ico" width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICO_CLOCK=ico('<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>');
+const ICO_EXT=ico('<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',13);
+const ICO_CHEV=ico('<path d="m9 18 6-6-6-6"/>',12);
+
+/* Where each rate comes from, mirrored from models.json sourceUrl and verifiedAt.
+   One pricing page per provider. VERIFIED is the date every row was last checked. */
+const SOURCES={
+ "OpenAI"   :"https://platform.openai.com/docs/pricing",
+ "Anthropic":"https://platform.claude.com/docs/en/about-claude/pricing",
+ "Google"   :"https://ai.google.dev/gemini-api/docs/pricing",
+ "xAI"      :"https://docs.x.ai/docs/models",
+ "Meta"     :"https://dev.meta.ai/docs/pricing-rate-limits",
+ "Moonshot" :"https://platform.kimi.ai/docs/pricing/chat-k3",
+ "DeepSeek" :"https://api-docs.deepseek.com/quick_start/pricing"
+};
+const VERIFIED="2026-10-19";
+const rate=v=>{let t=v.toFixed(3).replace(/0$/,""); return "$"+t;};
+const OPEN=new Set();
 const promoLabel=id=>{const q=PROMO[id]; if(!q) return ""; return q.atLeast? "promo, at least to "+dmy(q.end) : "promo to "+dmy(q.end);};
 
 const PRESETS={
@@ -1021,14 +1056,19 @@ function render(){
   const min=rows[0].t, max=rows[rows.length-1].t;
   $("cmp").innerHTML=rows.map((row,k)=>{
     const mult=row.t/min;
+    const open=OPEN.has(row.x.id), did="d-"+row.x.id;
     return `<tr>
       <td class="rank">${String(k+1).padStart(2,"0")}</td>
-      <td><span class="mname${k===0?' best':''}">${row.x.n}</span><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}</span></td>
+      <td><button type="button" class="mbtn" data-id="${row.x.id}" aria-expanded="${open}" aria-controls="${did}">${ICO_CHEV}<span class="mname${k===0?' best':''}">${row.x.n}</span></button><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}</span></td>
       <td class="r m">${money(row.t)}</td>
       <td class="r m">${money(row.t*D*30)}</td>
       <td class="r m" style="color:${mult<2?'var(--accent)':mult<8?'var(--amber)':'var(--red)'}">${mult.toFixed(1)}×</td>
       <td class="bar-cell"><div class="bar" style="width:${Math.max(3,row.t/max*100)}%"></div></td>
-    </tr>`;}).join("");
+    </tr>`+(open?`<tr class="detail" id="${did}"><td></td><td colspan="5"><div class="dwrap">
+      <span class="m">${rate(row.x.i)}</span> input · <span class="m">${rate(row.x.c)}</span> cached · <span class="m">${rate(row.x.o)}</span> output, per 1M tokens.
+      Verified ${dmy(VERIFIED)} ${VERIFIED.slice(0,4)}.
+      <a href="${SOURCES[row.x.p]}" rel="noopener noreferrer" target="_blank">${row.x.p} pricing page${ICO_EXT}</a>
+    </div></td></tr>`:"");}).join("");
 
   const groups={};
   MODELS.filter(x=>PROMO[x.id]).forEach(x=>{const q=PROMO[x.id];
@@ -1072,6 +1112,13 @@ document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{
   if(IN.includes(k)) document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();
 }));
+
+$("cmp").addEventListener("click",e=>{
+  const b=e.target.closest(".mbtn"); if(!b) return;
+  const id=b.dataset.id; OPEN.has(id)? OPEN.delete(id) : OPEN.add(id);
+  render();
+  const again=document.querySelector(`.mbtn[data-id="${id}"]`); if(again) again.focus();
+});
 
 $("bShare").onclick=()=>copy(location.href,$("bShare"),"Link copied");
 $("bMd").onclick=()=>copy(markdown(),$("bMd"),"Markdown copied");
