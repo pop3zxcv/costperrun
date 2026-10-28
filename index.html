@@ -63,6 +63,8 @@
      "acceptedAnswer":{"@type":"Answer","text":"Yes. Open Compare with a person under Scale and enter the minutes one task takes, that person's fully loaded cost per hour and, if you want a break-even, the one-time setup cost. The tool puts minutes divided by 60 times the hourly cost next to the cost of one run, then multiplies the difference by your runs per day and 30 days for the monthly saving. Break-even is the setup cost divided by that saving. It assumes every run completes the task. Retries are priced in; the time a person spends checking the output, and upkeep, are not. The figures are the ones you type. There is no salary benchmark behind them."}},
     {"@type":"Question","name":"How does the success rate change the cost?",
      "acceptedAnswer":{"@type":"Answer","text":"The Runs that complete the task slider sets the share of runs that finish the job correctly. A failed run is still billed, so cost per completed task is the cost of one run divided by the success rate. At the default workload a run costs $0.351 on Claude Sonnet 5.5; at 80% success each completed task costs $0.439. Monthly spend does not change, because you pay for every run. It is separate from the retry rate, which covers failed tool calls inside a run. The comparison table shows cost per run for every model, since success rates differ by model and the tool has no data for them."}},
+    {"@type":"Question","name":"What do the batch and cache-write options change?",
+     "acceptedAnswer":{"@type":"Answer","text":"Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them."}},
     {"@type":"Question","name":"Does this calculator send my data anywhere?",
      "acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs in the browser. There is no account, no analytics on your inputs and no server request carrying your numbers. Shareable links encode the configuration in the URL itself."}}
   ]
@@ -368,6 +370,10 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
 .hv-in>summary:hover::after{color:var(--txt)}
 .hv-in[open]>summary{border-bottom:1px solid var(--line)}
 .card[hidden]{display:none}
+.chk{display:flex;gap:11px;align-items:flex-start;margin:0 0 17px;font-size:13.5px;color:var(--dim);cursor:pointer}
+.chk:last-child{margin-bottom:0}
+.chk input{flex:none;width:16px;height:16px;margin:2px 0 0;accent-color:var(--accent)}
+.chk .hint{margin-top:5px}
 .note.succ{margin-top:18px;padding-top:0;border-top:0;font-size:13.5px;color:var(--dim)}
 .note.succ[hidden]{display:none}
 .note.succ b{font:600 15px var(--mono);color:var(--txt);letter-spacing:-.02em}
@@ -693,6 +699,18 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
           <label for="M">Primary model</label>
           <select id="M"></select>
         </div>
+        <label class="chk" for="B">
+          <input type="checkbox" id="B">
+          <span>Batch API
+            <span class="hint">Cuts the rate where the provider sells one: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have none and stay at the standard rate. Results arrive within 24 hours and each agent step waits on the one before, so this fits offline runs, not live agents.</span>
+          </span>
+        </label>
+        <label class="chk" for="W">
+          <input type="checkbox" id="W">
+          <span>Bill cache writes
+            <span class="hint">Anthropic and OpenAI charge 1.25× the input rate to write tokens into the cache; the other providers do not. When on, every input token that misses the cache is billed as a write, so at a 0% hit rate input costs 25% more than not caching at all.</span>
+          </span>
+        </label>
       </div>
     </div>
 
@@ -819,7 +837,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <div class="limits">
         <h4>Assumptions and limits</h4>
-        <p>Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted. Cache hit rate is a single figure rather than per-prefix. Providers use different tokenizers, so cross-vendor token counts are approximate. The same is true inside Anthropic's own lineup: Claude 4.7 and later, which is every Claude model here except Haiku 4.5, use a newer tokenizer that turns the same text into about 30% more tokens than Haiku 4.5 does. Entering one token count and comparing those models therefore understates what Sonnet 5.5 bills for the same work. OpenAI's GPT-5.6 charges 1.25× uncached input for cache <em>writes</em>, which is not modelled here, only reads. Treat the output as a planning estimate, not a billing forecast.</p>
+        <p>Retries are modelled as a flat multiplier on total cost. Real retries occur at a specific context depth, so failures late in a run are under-counted. Cache hit rate is a single figure rather than per-prefix. Providers use different tokenizers, so cross-vendor token counts are approximate. The same is true inside Anthropic's own lineup: Claude 4.7 and later, which is every Claude model here except Haiku 4.5, use a newer tokenizer that turns the same text into about 30% more tokens than Haiku 4.5 does. Entering one token count and comparing those models therefore understates what Sonnet 5.5 bills for the same work. Batch pricing and cache writes are options, off by default. Writes use the shortest retention, 5 minutes at Anthropic and 30 at OpenAI, and long-context price tiers are still not modelled. Treat the output as a planning estimate, not a billing forecast.</p>
         <p>Each model carries one rate, so tiered pricing is flattened, and the direction of the error differs by provider. DeepSeek bills peak and off-peak, with off-peak half the peak rate; the figures here are peak, so a run scheduled outside 01:00 to 04:00 and 06:00 to 10:00 UTC on a weekday costs about half what is shown (Chinese public holidays count as off-peak all day). OpenAI, xAI, Google and Anthropic's Claude Haiku 5.5 instead raise rates once a single request gets large, and the figures here are the base tier, so a long agent is undercharged rather than overcharged. Haiku 5.5 changes gear first, at 100K prompt tokens, where input, output and cache rates all rise 5×. Grok and Gemini change gear at 200K tokens, Grok by doubling every rate. OpenAI's threshold is higher at 272K, where the whole request is rebilled at 2× input and 1.5× output, taking GPT-6 Astra from $10 / $50 to $20 / $75. On the default workload the largest single request is about 81K tokens at 50 steps, so this starts to bite at roughly 62 steps on Haiku 5.5, 125 on Grok and Gemini and 170 on OpenAI. A 100-step Haiku 5.5 run costs about 3.5 times the figure shown.</p>
       </div>
     </div>
@@ -855,6 +873,11 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <details>
         <summary>How does the success rate change the cost?</summary>
         <div class="a">The Runs that complete the task slider sets the share of runs that finish the job correctly. A failed run is still billed, so cost per completed task is the cost of one run divided by the success rate. At the default workload a run costs $0.351 on Claude Sonnet 5.5; at 80% success each completed task costs $0.439. Monthly spend does not change, because you pay for every run. It is separate from the retry rate, which covers failed tool calls inside a run. The comparison table shows cost per run for every model, since success rates differ by model and the tool has no data for them.</div>
+      </details>
+
+      <details>
+        <summary>What do the batch and cache-write options change?</summary>
+        <div class="a">Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them.</div>
       </details>
 
       <details>
@@ -995,7 +1018,40 @@ const PRESETS={
  "Simple tool-use" :{S:1000,U:400, N:5, O:300, T:800, R:5, C:0}
 };
 
-const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,HM:0,HR:0,HS:0,X:100,m:"sonnet-5-5"};
+/* Batch API price as a multiple of the standard rate: [input, cached input, output]. Mirrored from
+   models.json batchMultiplier. Absent means the provider sells no batch API for that model. */
+const BATCH={
+"gpt-6-astra":[0.5,0.5,0.5],
+ "gpt-6-1-sol":[0.5,0.5,0.5],
+ "gpt-6-1-terra":[0.5,0.5,0.5],
+ "gpt-6-luna":[0.5,0.5,0.5],
+ "gpt-5-6-sol":[0.5,0.5,0.5],
+ "gpt-5-6-terra":[0.5,0.5,0.5],
+ "gpt-5-6-luna":[0.5,0.5,0.5],
+ "fable-5-1":[0.5,0.5,0.5],
+ "opus-5-5":[0.5,0.5,0.5],
+ "sonnet-5-5":[0.5,0.5,0.5],
+ "fable-5":[0.5,0.5,0.5],
+ "opus-5":[0.5,0.5,0.5],
+ "sonnet-5":[0.5,0.5,0.5],
+ "haiku-5-5":[0.5,0.5,0.5],
+ "haiku-4-5":[0.5,0.5,0.5],
+ "gemini-4-argon":[0.5,0.5,0.5],
+ "gemini-3-1-pro":[0.5,1,0.5],
+ "gemini-3-8-fl":[0.5,0.5,0.5],
+ "gemini-3-7-fl":[0.5,0.5,0.5],
+ "gemini-3-6-fl":[0.5,0.5,0.5],
+ "gemini-2-5-pro":[0.5,1,0.5],
+ "grok-4-5":[0.8,0.8,0.8],
+ "grok-4-7":[0.8,0.8,0.8],
+ "grok-4-6":[0.8,0.8,0.8],
+ "grok-4-3":[0.8,0.8,0.8]
+};
+/* Cache-write rate as a multiple of the input rate (Anthropic 5-minute, OpenAI 30-minute).
+   Mirrored from models.json cacheWriteMultiple. Absent means no write charge. */
+const CW={"gpt-6-astra":1.25,"gpt-6-1-sol":1.25,"gpt-6-1-terra":1.25,"gpt-6-luna":1.25,"gpt-5-6-sol":1.25,"gpt-5-6-terra":1.25,"gpt-5-6-luna":1.25,"fable-5-1":1.25,"opus-5-5":1.25,"sonnet-5-5":1.25,"fable-5":1.25,"opus-5":1.25,"sonnet-5":1.25,"haiku-5-5":1.25,"haiku-4-5":1.25};
+
+const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,HM:0,HR:0,HS:0,X:100,B:0,W:0,m:"sonnet-5-5"};
 
 const $=id=>document.getElementById(id);
 const IN=["S","U","N","O","T","R","C","X"];
@@ -1006,7 +1062,13 @@ const money=v=> v>=100? "$"+v.toLocaleString(undefined,{maximumFractionDigits:0}
 const num=v=>v.toLocaleString();
 
 /* ---- core model: agent loop with quadratic context growth ---- */
+function rates(m,p){
+  const b=p.B? BATCH[m.id] : null;
+  const i=m.i*(b?b[0]:1), c=m.c*(b?b[1]:1), o=m.o*(b?b[2]:1);
+  return {i,c,o,w:(p.W&&CW[m.id])? i*CW[m.id] : i};
+}
 function calc(m,p){
+  const rt=rates(m,p);
   const steps=[];
   let tokCtx=0, tokSys=0, tokIn=0, tokOut=0, running=0;
   for(let i=1;i<=p.N;i++){
@@ -1014,23 +1076,23 @@ function calc(m,p){
     const ctx=p.S+p.U+carried;
     tokSys+=p.S; tokIn+=p.U; tokCtx+=carried; tokOut+=p.O;
     const cached=ctx*p.C, fresh=ctx-cached;
-    const cost=(cached*m.c + fresh*m.i + p.O*m.o)/1e6;
+    const cost=(cached*rt.c + fresh*rt.w + p.O*rt.o)/1e6;
     running+=cost;
     steps.push({i,ctx,cost,running});
   }
   const retry=1+p.R;
   const total=running*retry;
-  const blend=m.c*p.C + m.i*(1-p.C);
+  const blend=rt.c*p.C + rt.w*(1-p.C);
   return {total,
     steps:steps.map(s=>({...s,running:s.running*retry,cost:s.cost*retry})),
     cSys:tokSys*blend/1e6*retry, cIn:tokIn*blend/1e6*retry,
-    cCtx:tokCtx*blend/1e6*retry, cOut:tokOut*m.o/1e6*retry,
+    cCtx:tokCtx*blend/1e6*retry, cOut:tokOut*rt.o/1e6*retry,
     tokTotalIn:(tokSys+tokIn+tokCtx)*retry, tokTotalOut:tokOut*retry};
 }
 
 function read(){
   const p={}; IN.forEach(k=>p[k]=+$(k).value);
-  p.R/=100; p.C/=100; p.X/=100; return p;
+  p.R/=100; p.C/=100; p.X/=100; p.B=$("B").checked; p.W=$("W").checked; return p;
 }
 
 /* ---- URL state ---- */
@@ -1039,6 +1101,8 @@ function writeURL(){
   IN.forEach(k=>{ if(+$(k).value!==DEFAULTS[k]) q.set(k.toLowerCase(),$(k).value); });
   if(+$("D").value!==DEFAULTS.D) q.set("d",$("D").value);
   HX.forEach(k=>{ if(+$(k).value!==DEFAULTS[k]) q.set(k.toLowerCase(),$(k).value); });
+  if($("B").checked) q.set("b","1");
+  if($("W").checked) q.set("w","1");
   const mid=MODELS[+$("M").value].id;
   if(mid!==DEFAULTS.m) q.set("m",mid);
   const s=q.toString();
@@ -1053,6 +1117,7 @@ function readURL(){
   });
   const d=q.get("d"); if(d!==null && !isNaN(+d)){ $("D").value=+d; any=true; }
   HX.forEach(k=>{ const v=q.get(k.toLowerCase()); if(v!==null && !isNaN(+v) && +v>=0){ $(k).value=+v; any=true; } });
+  ["B","W"].forEach(k=>{ if(q.get(k.toLowerCase())==="1"){ $(k).checked=true; any=true; } });
   const m=q.get("m");
   if(m){ const idx=MODELS.findIndex(x=>x.id===m); if(idx>=0){ $("M").value=idx; any=true; } }
   return any;
@@ -1088,7 +1153,7 @@ function markdown(){
 | Output / step | ${num(p.O)} tokens |
 | Tool result / step | ${num(p.T)} tokens |
 | Retry rate | ${Math.round(p.R*100)}% |
-| Cache hit rate | ${Math.round(p.C*100)}% |${p.X<1? `
+| Cache hit rate | ${Math.round(p.C*100)}% |${p.B? "\n| Batch API | on |" : ""}${p.W? "\n| Cache writes billed | on |" : ""}${p.X<1? `
 | Runs that complete the task | ${Math.round(p.X*100)}% |` : ""}
 
 **Cost per run: ${money(r.total)}**
@@ -1120,6 +1185,11 @@ function fallback(text,done){
 }
 
 /* paint the filled portion of each slider track */
+function extra(x){
+  const b=BATCH[x.id], w=CW[x.id];
+  return (b? `Batch <span class="m">${rate(x.i*b[0])}</span> / <span class="m">${rate(x.c*b[1])}</span> / <span class="m">${rate(x.o*b[2])}</span>.` : "No batch API.")+
+    (w? ` Cache writes <span class="m">${rate(x.i*w)}</span> (${w}× input).` : " No cache-write charge.");
+}
 function paintRange(el){
   const min=+el.min, max=+el.max, v=+el.value;
   el.style.setProperty("--p",((v-min)/(max-min)*100)+"%");
@@ -1217,7 +1287,8 @@ function render(){
     const mult=row.t/min;
     const open=OPEN.has(row.x.id), did="d-"+row.x.id, L=row.L;
     const flags=(!L.fits? ` <span class="flag bad">${ICO_ALERT}needs ${kTok(L.need)}, window is ${kTok(row.x.w)}</span>`:"")+
-      (L.fits&&L.tierStep? ` <span class="flag">${ICO_ALERT}rate rises at step ${L.tierStep}</span>`:"");
+      (L.fits&&L.tierStep? ` <span class="flag">${ICO_ALERT}rate rises at step ${L.tierStep}</span>`:"")+
+      (p.B&&!BATCH[row.x.id]? ` <span class="flag">${ICO_ALERT}no batch API, standard rate</span>`:"");
     return `<tr${L.fits?"":' class="nofit"'}>
       <td class="rank">${L.fits? String(k+1).padStart(2,"0") : "–"}</td>
       <td><button type="button" class="mbtn" data-id="${row.x.id}" aria-expanded="${open}" aria-controls="${did}">${ICO_CHEV}<span class="mname${k===0&&L.fits?' best':''}">${row.x.n}</span></button><span class="prov">${row.x.p}${PROMO[row.x.id]?` <span class="tag">${ICO_CLOCK}${promoLabel(row.x.id)}</span>`:""}${flags}</span></td>
@@ -1227,7 +1298,7 @@ function render(){
       <td class="bar-cell"><div class="bar" style="width:${Math.max(3,row.t/max*100)}%"></div></td>
     </tr>`+(open?`<tr class="detail" id="${did}"><td></td><td colspan="5"><div class="dwrap">
       <span class="m">${rate(row.x.i)}</span> input · <span class="m">${rate(row.x.c)}</span> cached · <span class="m">${rate(row.x.o)}</span> output, per 1M tokens.
-      Verified ${dmy(VERIFIED)} ${VERIFIED.slice(0,4)}.
+      ${extra(row.x)} Verified ${dmy(VERIFIED)} ${VERIFIED.slice(0,4)}.
       <a href="${SOURCES[row.x.p]}" rel="noopener noreferrer" target="_blank">${row.x.p} pricing page${ICO_EXT}</a>
     </div></td></tr>`:"");}).join("");
 
@@ -1272,6 +1343,7 @@ document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); render();
 });
+["B","W"].forEach(k=>$(k).addEventListener("change",render));
 [...IN,...HX,"D","M"].forEach(k=>$(k).addEventListener("input",()=>{
   if(IN.includes(k)&&k!=="X") document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();
@@ -1291,6 +1363,7 @@ $("bReset").onclick=()=>{
   $("D").value=DEFAULTS.D;
   HX.forEach(k=>$(k).value=DEFAULTS[k]);
   $("hvDet").open=false;
+  $("B").checked=false; $("W").checked=false;
   $("M").value=MODELS.findIndex(x=>x.id===DEFAULTS.m);
   document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();

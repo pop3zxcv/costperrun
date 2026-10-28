@@ -4,9 +4,9 @@
   "lastUpdated": "2026-10-28",
   "notes": {
     "cacheReads": "Cache discounts vary by model and are taken from each provider's published cached rate, not assumed. Most sit near 90% off input. Anthropic prices cache hits at 0.1x input except Claude Opus 5.5 and Claude Sonnet 5.5 (0.05x) and Claude Fable 5.1 (0.025x). OpenAI's GPT-6.1 Sol is 0.05x.",
-    "cacheWrites": "OpenAI publishes a cache-WRITE column for every GPT-6 and GPT-5.6 model at exactly 1.25x uncached input. Not represented in cachedInput and not modelled in the calculator.",
+    "cacheWrites": "Anthropic (5-minute writes) and OpenAI (30-minute writes) charge 1.25x the input rate to write tokens into the cache; both also sell longer retention at 2x and 2.5x, which the calculator does not use. Google (implicit caching), xAI, DeepSeek and Meta publish no write charge. Moonshot's K3 models bill a 5-minute write at exactly the input rate, so there is no premium. Modelled as an option: when on, every input token that misses the cache is billed at the write rate, which is cacheWriteMultiple times the input rate.",
     "tokenizers": "Providers use different tokenizers, so cross-vendor token counts are approximate. This also applies within Anthropic: Claude 4.7 and later, which is every Claude model in this dataset except Haiku 4.5, use a newer tokenizer that produces about 30% more tokens for the same text than Sonnet 4.6 and earlier.",
-    "batchApi": "Anthropic and OpenAI batch APIs cut both input and output ~50%. Not yet modelled.",
+    "batchApi": "batchMultiplier is each rate's batch price divided by its standard price. OpenAI, Anthropic and Google halve input and output; OpenAI and Anthropic halve cache rates too, while Gemini 3.1 Pro and 2.5 Pro keep the standard cache price in batch. xAI's batch price is 0.8x on every rate (priceMultiplier 0.8 on its model pages). DeepSeek, Meta and Moonshot's K3 models have no batch API (Moonshot's batch covers K2 only). Batch results arrive within 24 hours, so each agent step waits on the previous one: the option suits offline runs, not live agents.",
     "longContext": "Four providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. Claude Haiku 5.5 changes at 100K prompt tokens: 0.10/0.01/0.50 -> 0.50/0.05/2.50 for the whole request, cache reads counted toward the 100K. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, GPT-6.1 Sol 2/10 -> 4/15, GPT-6 Luna 0.10/0.50 -> 0.20/0.75, GPT-5.6 Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K. The other Claude models carry no long-context tier.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, excluding Chinese public holidays. All other hours are off-peak. This dataset lists PEAK.",
     "promotionalRates": "Gemini 4 Argon is on an introductory rate through 2026-11-30 and doubles on 2026-12-01. Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
@@ -47,7 +47,13 @@
       "output": 50.0,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-28",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-6-1-sol",
@@ -59,7 +65,13 @@
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Cache hits are 0.05x input, against OpenAI's usual 0.1x."
+      "note": "Cache hits are 0.05x input, against OpenAI's usual 0.1x.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-6-1-terra",
@@ -71,7 +83,13 @@
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Cache hits are 0.05x input. OpenAI lists cache writes at 1.25 for 30-minute retention and 2.50 for 12-hour retention; neither is modelled. Prompts over 272K input tokens are billed at 2x input and cache rates and 1.5x output for the whole request."
+      "note": "Cache hits are 0.05x input. OpenAI lists cache writes at 1.25 for 30-minute retention and 2.50 for 12-hour retention; neither is modelled. Prompts over 272K input tokens are billed at 2x input and cache rates and 1.5x output for the whole request.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-6-luna",
@@ -83,7 +101,13 @@
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Half of GPT-5.6 Luna on every rate."
+      "note": "Half of GPT-5.6 Luna on every rate.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-5-6-sol",
@@ -95,7 +119,13 @@
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "The 4.00/20.00 rate is promotional, described by OpenAI as available at least through 2026-11-21. No successor rate is published."
+      "note": "The 4.00/20.00 rate is promotional, described by OpenAI as available at least through 2026-11-21. No successor rate is published.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-5-6-terra",
@@ -106,7 +136,13 @@
       "output": 12,
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-28",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gpt-5-6-luna",
@@ -118,7 +154,13 @@
       "context": 1050000,
       "sourceUrl": "https://platform.openai.com/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Price cut 80% on 2026-07-30"
+      "note": "Price cut 80% on 2026-07-30",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "fable-5-1",
@@ -130,7 +172,13 @@
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Cache hits are 0.025x input, a 97.5% discount, against the standard 0.1x."
+      "note": "Cache hits are 0.025x input, a 97.5% discount, against the standard 0.1x.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "opus-5-5",
@@ -142,7 +190,13 @@
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Cache hits are 0.05x input, a 95% discount, against the standard 0.1x. Cheaper than Opus 5 on every rate."
+      "note": "Cache hits are 0.05x input, a 95% discount, against the standard 0.1x. Cheaper than Opus 5 on every rate.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "sonnet-5-5",
@@ -154,7 +208,13 @@
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Cache hits are 0.05x input (0.10), down from 0.20 as of 2026-10-10. Sonnet 5 keeps 0.20. Input and output rates are the same as Sonnet 5."
+      "note": "Cache hits are 0.05x input (0.10), down from 0.20 as of 2026-10-10. Sonnet 5 keeps 0.20. Input and output rates are the same as Sonnet 5.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "fable-5",
@@ -165,7 +225,13 @@
       "output": 50,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-28",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "opus-5",
@@ -176,7 +242,13 @@
       "output": 25,
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-28",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "sonnet-5",
@@ -188,7 +260,13 @@
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Launched at 2.00/10.00 as introductory pricing through 2026-08-31. Anthropic cancelled the scheduled increase to 3.00/15.00; this is now the standard rate. Confirmed on the pricing page 2026-09-01."
+      "note": "Launched at 2.00/10.00 as introductory pricing through 2026-08-31. Anthropic cancelled the scheduled increase to 3.00/15.00; this is now the standard rate. Confirmed on the pricing page 2026-09-01.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "haiku-5-5",
@@ -200,7 +278,13 @@
       "context": 1000000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Base tier, for prompts up to 100,000 tokens. Prompts over 100,000 tokens are priced at 0.50 input / 0.05 cache hit / 2.50 output for the whole request, and cache reads count toward the 100K. Same base rates as GPT-6 Luna."
+      "note": "Base tier, for prompts up to 100,000 tokens. Prompts over 100,000 tokens are priced at 0.50 input / 0.05 cache hit / 2.50 output for the whole request, and cache reads count toward the 100K. Same base rates as GPT-6 Luna.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "haiku-4-5",
@@ -211,7 +295,13 @@
       "output": 5,
       "context": 200000,
       "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-28",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      },
+      "cacheWriteMultiple": 1.25
     },
     {
       "id": "gemini-4-argon",
@@ -223,7 +313,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Generally available since 2026-10-13. Introductory rate through 2026-11-30, then 4.00 / 0.20 / 20.00 from 2026-12-01. The 1,048,576 context window is a unified input and output limit. Implicit caching only. Flat pricing, no long-context tier is listed."
+      "note": "Generally available since 2026-10-13. Introductory rate through 2026-11-30, then 4.00 / 0.20 / 20.00 from 2026-12-01. The 1,048,576 context window is a unified input and output limit. Implicit caching only. Flat pricing, no long-context tier is listed.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      }
     },
     {
       "id": "gemini-3-1-pro",
@@ -235,7 +330,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Rises to 4.00/18.00 for long context"
+      "note": "Rises to 4.00/18.00 for long context",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 1,
+        "output": 0.5
+      }
     },
     {
       "id": "gemini-3-8-fl",
@@ -247,7 +347,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Promotional rate through 2026-12-31, then 1.50/0.15/7.50 from 2027-01-01. Same as Gemini 3.6 and 3.7 Flash."
+      "note": "Promotional rate through 2026-12-31, then 1.50/0.15/7.50 from 2027-01-01. Same as Gemini 3.6 and 3.7 Flash.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      }
     },
     {
       "id": "gemini-3-7-fl",
@@ -259,7 +364,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Deprecated 2026-10-08. Google routes every gemini-3.7-flash request to gemini-3.8-flash, so this is the 3.8 Flash rate. Kept so shared links still resolve. Doubles on 2027-01-01 like the other Flash models."
+      "note": "Deprecated 2026-10-08. Google routes every gemini-3.7-flash request to gemini-3.8-flash, so this is the 3.8 Flash rate. Kept so shared links still resolve. Doubles on 2027-01-01 like the other Flash models.",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      }
     },
     {
       "id": "gemini-3-6-fl",
@@ -271,7 +381,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Launched 2026-07-21"
+      "note": "Launched 2026-07-21",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 0.5,
+        "output": 0.5
+      }
     },
     {
       "id": "gemini-2-5-pro",
@@ -283,7 +398,12 @@
       "context": 1048576,
       "sourceUrl": "https://ai.google.dev/gemini-api/docs/pricing",
       "verifiedAt": "2026-10-28",
-      "note": "Rises to 2.50/15.00 above 200K context"
+      "note": "Rises to 2.50/15.00 above 200K context",
+      "batchMultiplier": {
+        "input": 0.5,
+        "cachedInput": 1,
+        "output": 0.5
+      }
     },
     {
       "id": "grok-4-5",
@@ -295,7 +415,12 @@
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
       "verifiedAt": "2026-10-28",
-      "note": "Rates double at >=200K prompt tokens"
+      "note": "Rates double at >=200K prompt tokens",
+      "batchMultiplier": {
+        "input": 0.8,
+        "cachedInput": 0.8,
+        "output": 0.8
+      }
     },
     {
       "id": "grok-4-7",
@@ -307,7 +432,12 @@
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
       "verifiedAt": "2026-10-28",
-      "note": "Same rates as Grok 4.6. Rates double for requests of 200K prompt tokens or more."
+      "note": "Same rates as Grok 4.6. Rates double for requests of 200K prompt tokens or more.",
+      "batchMultiplier": {
+        "input": 0.8,
+        "cachedInput": 0.8,
+        "output": 0.8
+      }
     },
     {
       "id": "grok-4-6",
@@ -319,7 +449,12 @@
       "context": 500000,
       "sourceUrl": "https://docs.x.ai/docs/models",
       "verifiedAt": "2026-10-28",
-      "note": "Current flagship. Rates double at >=200K prompt tokens"
+      "note": "Current flagship. Rates double at >=200K prompt tokens",
+      "batchMultiplier": {
+        "input": 0.8,
+        "cachedInput": 0.8,
+        "output": 0.8
+      }
     },
     {
       "id": "grok-4-3",
@@ -331,7 +466,12 @@
       "context": 1000000,
       "sourceUrl": "https://docs.x.ai/docs/models",
       "verifiedAt": "2026-10-28",
-      "note": "Rates double at >=200K prompt tokens"
+      "note": "Rates double at >=200K prompt tokens",
+      "batchMultiplier": {
+        "input": 0.8,
+        "cachedInput": 0.8,
+        "output": 0.8
+      }
     },
     {
       "id": "deepseek-v4-pro",
