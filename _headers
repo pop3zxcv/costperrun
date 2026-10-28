@@ -3,18 +3,24 @@
 # "no data leaves your browser" becomes a rule the browser enforces, not just
 # a claim in the footer. If you ever add an external script, this will block it
 # until you update this file, which is the correct default.
+# script-src allows 'self' so the pages can load /models.js from this site. That is a
+# same-origin file; default-src 'none' still blocks every other host and every request.
 
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
 
 /social-card.png
   Cache-Control: public, max-age=604800
 
 /index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Shared model data. Prices change, so it must always revalidate.
+/models.js
   Cache-Control: public, max-age=0, must-revalidate
 
 # Font filenames are content-specific, so they can be cached hard.
