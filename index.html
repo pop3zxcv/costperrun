@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Agent Cost Calculator | What one agent run actually costs</title>
-<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 29 models.">
+<meta name="description" content="Most calculators price a single API call. Agents make dozens, and each one re-sends everything before it. Model the full loop: context accumulation, tool calls, retries and caching across 31 models.">
 <link rel="canonical" href="https://costperrun.com/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#191919">
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://costperrun.com/">
 <meta property="og:site_name" content="Cost Per Run">
 <meta property="og:title" content="Your AI agent bills about 6x the tokens you would estimate">
-<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 29 models. Free, no signup.">
+<meta property="og:description" content="Agents re-send their whole context every step, so input tokens grow with the square of the step count. Model it properly across 31 models. Free, no signup.">
 <meta property="og:image" content="https://costperrun.com/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -36,13 +36,13 @@
   "url":"https://costperrun.com/",
   "applicationCategory":"DeveloperApplication",
   "operatingSystem":"Any (web browser)",
-  "description":"Estimates the true cost of a multi-step AI agent run by modelling context accumulation, tool-result size, retry rate and prompt caching across 29 LLMs. Unlike single-request calculators, it accounts for the quadratic growth in input tokens caused by re-sending conversation history each step.",
+  "description":"Estimates the true cost of a multi-step AI agent run by modelling context accumulation, tool-result size, retry rate and prompt caching across 31 LLMs. Unlike single-request calculators, it accounts for the quadratic growth in input tokens caused by re-sending conversation history each step.",
   "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
   "featureList":[
     "Models quadratic context accumulation across agent steps",
     "Retry rate and prompt cache hit rate modelling",
     "Cost attribution breakdown by component",
-    "Side-by-side comparison of 29 models",
+    "Side-by-side comparison of 31 models",
     "Per-step cost accumulation table",
     "Shareable URLs for any workload configuration"
   ]
@@ -572,7 +572,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
       <a class="btn" href="#method">Read the method</a>
     </div>
-    <p class="microcopy"><b>29 models</b> · No signup · Nothing leaves your browser</p>
+    <p class="microcopy"><b>31 models</b> · No signup · Nothing leaves your browser</p>
   </div>
 
   <div class="proof">
@@ -797,7 +797,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <details>
         <summary>Where do the prices come from?</summary>
-        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 19 October 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
+        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 28 October 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
       </details>
     </div>
   </div>
@@ -818,7 +818,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <p>Free. No signup. No tracking. No data leaves your browser.</p>
       <a class="report" href="https://github.com/pop3zxcv/costperrun/issues" rel="noopener noreferrer" target="_blank"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>Report a stale price</a>
     </div>
-    <p>Model prices checked against each provider's own pricing page on <b>19 October 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
+    <p>Model prices checked against each provider's own pricing page on <b>28 October 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
   </div>
 </footer>
 
@@ -831,6 +831,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 const MODELS=[
  {id:"gpt-6-astra",   p:"OpenAI",   n:"GPT-6 Astra",     i:10.00, c:1.00,   o:50.00, w:1050000},
  {id:"gpt-6-1-sol",   p:"OpenAI",   n:"GPT-6.1 Sol",     i:2.00,  c:0.10,   o:10.00, w:1050000},
+ {id:"gpt-6-1-terra", p:"OpenAI",   n:"GPT-6.1 Terra",   i:1.00,  c:0.05,   o:5.00, w:1050000},
  {id:"gpt-6-luna",    p:"OpenAI",   n:"GPT-6 Luna",      i:0.10,  c:0.01,   o:0.50, w:1050000},
  {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:4.00,  c:0.40,   o:20.00, w:1050000},
  {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.00,  c:0.20,   o:12.00, w:1050000},
@@ -855,6 +856,7 @@ const MODELS=[
  {id:"grok-4-3",      p:"xAI",      n:"Grok 4.3",        i:1.25,  c:0.20,   o:2.50, w:1000000},
  {id:"muse-wonder-1-0",p:"Meta",    n:"Muse Wonder 1.0", i:4.00,  c:0.20,   o:20.00, w:1048576},
  {id:"muse-spark-1-3",p:"Meta",     n:"Muse Spark 1.3",  i:1.25,  c:0.15,   o:4.25, w:1048576},
+ {id:"kimi-k3-1-pro", p:"Moonshot", n:"Kimi K3.1 Pro",   i:2.00,  c:0.20,   o:10.00, w:1048576},
  {id:"kimi-k3",       p:"Moonshot", n:"Kimi K3",         i:3.00,  c:0.30,   o:15.00, w:1048576},
  {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96, w:1000000},
  {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4.1 Flash",i:0.30, c:0.006, o:1.20, w:1000000}
@@ -888,10 +890,10 @@ const SOURCES={
  "Google"   :"https://ai.google.dev/gemini-api/docs/pricing",
  "xAI"      :"https://docs.x.ai/docs/models",
  "Meta"     :"https://dev.meta.ai/docs/pricing-rate-limits",
- "Moonshot" :"https://platform.kimi.ai/docs/pricing/chat-k3",
+ "Moonshot" :"https://platform.kimi.ai/docs/pricing/chat",
  "DeepSeek" :"https://api-docs.deepseek.com/quick_start/pricing"
 };
-const VERIFIED="2026-10-19";
+const VERIFIED="2026-10-28";
 const rate=v=>{let t=v.toFixed(3).replace(/0$/,""); return "$"+t;};
 const OPEN=new Set();
 /* Long-context price tiers, mirrored from models.json notes.longContext. A request whose prompt
@@ -900,7 +902,7 @@ const OPEN=new Set();
    reprice them yet, so a flagged figure understates the bill. */
 const TIERS={
  "haiku-5-5"     :{at:100000},
- "gpt-6-astra"   :{at:272000}, "gpt-6-1-sol":{at:272000}, "gpt-6-luna":{at:272000},
+ "gpt-6-astra"   :{at:272000}, "gpt-6-1-sol":{at:272000}, "gpt-6-1-terra":{at:272000}, "gpt-6-luna":{at:272000},
  "gpt-5-6-sol"   :{at:272000}, "gpt-5-6-terra":{at:272000}, "gpt-5-6-luna":{at:272000},
  "gemini-3-1-pro":{at:200000}, "gemini-2-5-pro":{at:200000},
  "grok-4-7"      :{at:200000,ge:true}, "grok-4-6":{at:200000,ge:true}, "grok-4-5":{at:200000,ge:true}, "grok-4-3":{at:200000,ge:true}
