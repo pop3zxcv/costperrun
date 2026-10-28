@@ -61,6 +61,8 @@
      "acceptedAnswer":{"@type":"Answer","text":"Standard calculators price a single API request: input tokens times rate plus output tokens times rate. That is correct for a chatbot but understates agent costs by several times, because it ignores the context re-sent on every step of the loop."}},
     {"@type":"Question","name":"Can I compare the agent's cost with a person doing the same task?",
      "acceptedAnswer":{"@type":"Answer","text":"Yes. Open Compare with a person under Scale and enter the minutes one task takes, that person's fully loaded cost per hour and, if you want a break-even, the one-time setup cost. The tool puts minutes divided by 60 times the hourly cost next to the cost of one run, then multiplies the difference by your runs per day and 30 days for the monthly saving. Break-even is the setup cost divided by that saving. It assumes every run completes the task. Retries are priced in; the time a person spends checking the output, and upkeep, are not. The figures are the ones you type. There is no salary benchmark behind them."}},
+    {"@type":"Question","name":"How does the success rate change the cost?",
+     "acceptedAnswer":{"@type":"Answer","text":"The Runs that complete the task slider sets the share of runs that finish the job correctly. A failed run is still billed, so cost per completed task is the cost of one run divided by the success rate. At the default workload a run costs $0.351 on Claude Sonnet 5.5; at 80% success each completed task costs $0.439. Monthly spend does not change, because you pay for every run. It is separate from the retry rate, which covers failed tool calls inside a run. The comparison table shows cost per run for every model, since success rates differ by model and the tool has no data for them."}},
     {"@type":"Question","name":"Does this calculator send my data anywhere?",
      "acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs in the browser. There is no account, no analytics on your inputs and no server request carrying your numbers. Shareable links encode the configuration in the URL itself."}}
   ]
@@ -366,6 +368,12 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
 .hv-in>summary:hover::after{color:var(--txt)}
 .hv-in[open]>summary{border-bottom:1px solid var(--line)}
 .card[hidden]{display:none}
+.note.succ{margin-top:18px;padding-top:0;border-top:0;font-size:13.5px;color:var(--dim)}
+.note.succ[hidden]{display:none}
+.note.succ b{font:600 15px var(--mono);color:var(--txt);letter-spacing:-.02em}
+.spread{padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.6;color:var(--dim)}
+.spread b{font:600 14px var(--mono);color:var(--txt)}
+.spread:empty{display:none}
 .fig .v.win{color:var(--accent)}
 .fig .v.lose{color:var(--amber)}
 .fig .v{font:600 clamp(25px,2.4vw,31px)/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
@@ -665,6 +673,12 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
           <span class="hint" id="hC">Cached input costs about 90% less. The biggest single lever you have.</span>
         </div>
 
+        <div class="f">
+          <label for="X">Runs that complete the task <b id="lX">100%</b></label>
+          <input type="range" id="X" min="10" max="100" step="5" value="100" aria-describedby="hX">
+          <span class="hint" id="hX">Whole-run outcome, separate from the retry rate. A failed run is still billed.</span>
+        </div>
+
       </div>
     </div>
 
@@ -718,6 +732,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
           <div class="fig"><div class="v sm" id="perMo">···</div><div class="l">Per month</div></div>
           <div class="fig"><div class="v sm" id="perYr">···</div><div class="l">Per year</div></div>
         </div>
+        <div class="note succ" id="succ" hidden></div>
         <div class="insight" id="insight"></div>
       </div>
     </div>
@@ -746,6 +761,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
     <div class="card">
       <div class="card-head"><h3>Same workload, every model</h3></div>
+      <div class="spread" id="spread"></div>
       <div class="scroll">
       <table class="cmp-tbl">
         <thead><tr>
@@ -834,6 +850,11 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <details>
         <summary>Can I compare the agent's cost with a person doing the same task?</summary>
         <div class="a">Yes. Open Compare with a person under Scale and enter the minutes one task takes, that person's fully loaded cost per hour and, if you want a break-even, the one-time setup cost. The tool puts minutes divided by 60 times the hourly cost next to the cost of one run, then multiplies the difference by your runs per day and 30 days for the monthly saving. Break-even is the setup cost divided by that saving. It assumes every run completes the task. Retries are priced in; the time a person spends checking the output, and upkeep, are not. The figures are the ones you type. There is no salary benchmark behind them.</div>
+      </details>
+
+      <details>
+        <summary>How does the success rate change the cost?</summary>
+        <div class="a">The Runs that complete the task slider sets the share of runs that finish the job correctly. A failed run is still billed, so cost per completed task is the cost of one run divided by the success rate. At the default workload a run costs $0.351 on Claude Sonnet 5.5; at 80% success each completed task costs $0.439. Monthly spend does not change, because you pay for every run. It is separate from the retry rate, which covers failed tool calls inside a run. The comparison table shows cost per run for every model, since success rates differ by model and the tool has no data for them.</div>
       </details>
 
       <details>
@@ -974,10 +995,10 @@ const PRESETS={
  "Simple tool-use" :{S:1000,U:400, N:5, O:300, T:800, R:5, C:0}
 };
 
-const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,HM:0,HR:0,HS:0,m:"sonnet-5-5"};
+const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,HM:0,HR:0,HS:0,X:100,m:"sonnet-5-5"};
 
 const $=id=>document.getElementById(id);
-const IN=["S","U","N","O","T","R","C"];
+const IN=["S","U","N","O","T","R","C","X"];
 const HX=["HM","HR","HS"];
 const money=v=> v>=100? "$"+v.toLocaleString(undefined,{maximumFractionDigits:0})
               : v>=1 ? "$"+v.toFixed(2)
@@ -1009,7 +1030,7 @@ function calc(m,p){
 
 function read(){
   const p={}; IN.forEach(k=>p[k]=+$(k).value);
-  p.R/=100; p.C/=100; return p;
+  p.R/=100; p.C/=100; p.X/=100; return p;
 }
 
 /* ---- URL state ---- */
@@ -1067,17 +1088,19 @@ function markdown(){
 | Output / step | ${num(p.O)} tokens |
 | Tool result / step | ${num(p.T)} tokens |
 | Retry rate | ${Math.round(p.R*100)}% |
-| Cache hit rate | ${Math.round(p.C*100)}% |
+| Cache hit rate | ${Math.round(p.C*100)}% |${p.X<1? `
+| Runs that complete the task | ${Math.round(p.X*100)}% |` : ""}
 
 **Cost per run: ${money(r.total)}**
-At ${num(D)} runs/day: ${money(r.total*D)}/day, ${money(r.total*D*30)}/month
+At ${num(D)} runs/day: ${money(r.total*D)}/day, ${money(r.total*D*30)}/month${p.X<1? `
+Per completed task: ${money(r.total/Math.max(p.X,.01))}` : ""}
 
 Billed input: ${num(Math.round(r.tokTotalIn))} tokens vs ${num(raw)} raw conversation length (${(r.tokTotalIn/Math.max(1,raw)).toFixed(1)}x multiplier from re-sent context).
 
 Cheapest models for this workload:
 ${rows.map((x,i)=>`${i+1}. ${x.x.n}: ${money(x.t)}/run`).join("\n")}
 
-${(()=>{const v=versus(r.total,D); return v? `
+${(()=>{const v=versus(r.total/Math.max(p.X,.01),D); return v? `
 Against a person: ${v.mins} min at ${money(v.rate)}/hour is ${money(v.person)} per task, so the agent costs ${v.pct<1? "under 1":Math.round(v.pct)}% as much per task. `+(v.saveMo>0? `Saves ${money(v.saveMo)}/month; break-even ${v.setup>0? "after "+beText(v.be) : "from day 1"}.` : `No saving at these inputs.`)+"\n" : ""})()}
 _Estimated with ${location.origin||"https://costperrun.com"}${location.pathname}${location.search}_`;
 }
@@ -1113,6 +1136,7 @@ function render(){
   $("lT").textContent=num(+$("T").value);
   $("lR").textContent=$("R").value+"%";
   $("lC").textContent=$("C").value+"%";
+  $("lX").textContent=$("X").value+"%";
 
   const r=calc(m,p);
   $("mName").textContent=m.n;
@@ -1124,20 +1148,24 @@ function render(){
   $("mModel").textContent=m.n;
   $("mMo").textContent=money(r.total*D*30);
 
-  const v=versus(r.total,D);
+  const succ=Math.max(p.X,.01), task=r.total/succ;
+  $("succ").hidden=!(p.X<1);
+  if(p.X<1) $("succ").innerHTML=`<b>${money(task)}</b> per completed task. At ${$("X").value}% of runs completing, failed runs add ${money(task-r.total)} to each success: ${money(r.total)} divided by ${p.X.toFixed(2)}. Monthly spend above is unchanged.`;
+  const v=versus(task,D);
   $("hvCard").hidden=!v;
   if(v){
     const win=v.saveMo>0;
     $("hvFigs").innerHTML=
       `<div class="fig"><div class="v ${win?"win":"lose"}">${win? money(v.saveMo) : "No saving"}</div><div class="l">${win? "Saved per month":"At these inputs"}</div></div>`+
       `<div class="fig"><div class="v sm">${money(v.person)}</div><div class="l">Person, per task</div></div>`+
-      `<div class="fig"><div class="v sm">${money(r.total)}</div><div class="l">Agent, per run</div></div>`+
+      `<div class="fig"><div class="v sm">${money(task)}</div><div class="l">${p.X<1?"Agent, per success":"Agent, per run"}</div></div>`+
       `<div class="fig"><div class="v sm">${win? beText(v.be) : "never"}</div><div class="l">Break-even</div></div>`;
     $("hvNote").innerHTML=
       (win? `The agent costs <code>${v.pct<1?"under 1":Math.round(v.pct)}%</code> of a person per task. `
           : `The agent costs <code>${Math.round(v.pct)}%</code> of a person per task, so there is nothing to pay back. `)+
       `Saving is per task times <code>${num(D)}</code> tasks a day over 30 days. `+
-      `It assumes every run completes the task. Retries are priced in, but the time a person spends checking the output is not, and neither is upkeep.`;
+      (p.X<1? `Failed runs are billed and counted in the agent figure. ` : `It assumes every run completes the task. `)+
+      `Retries are priced in, but the time a person spends checking the output is not, and neither is upkeep.`;
   }
 
   const tot=r.cSys+r.cIn+r.cCtx+r.cOut||1;
@@ -1180,6 +1208,11 @@ function render(){
   const rows=MODELS.map(x=>({x,t:calc(x,p).total,L:limits(x,p)}))
     .sort((a,b)=>(b.L.fits-a.L.fits)||(a.t-b.t));
   const ok=rows.filter(r=>r.L.fits), min=(ok[0]||rows[0]).t, max=Math.max(...rows.map(r=>r.t));
+  if(ok.length>1){
+    const hi=ok.reduce((a,b)=>b.t>a.t?b:a), lo=ok[0], x=hi.t/lo.t;
+    const tie=r=>{const n=ok.filter(o=>Math.abs(o.t-r.t)<1e-9).length-1; return n? ` (tied with ${n} other${n>1?"s":""})` : ""};
+    $("spread").innerHTML=`<b>${x>=10? Math.round(x).toLocaleString() : x.toFixed(1)}×</b> from the cheapest to the priciest model that fits this workload: ${lo.x.n} at ${money(lo.t)} a run${tie(lo)}, ${hi.x.n} at ${money(hi.t)}${tie(hi)}.`;
+  } else $("spread").innerHTML="";
   $("cmp").innerHTML=rows.map((row,k)=>{
     const mult=row.t/min;
     const open=OPEN.has(row.x.id), did="d-"+row.x.id, L=row.L;
@@ -1240,7 +1273,7 @@ document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{
   b.classList.add("on"); render();
 });
 [...IN,...HX,"D","M"].forEach(k=>$(k).addEventListener("input",()=>{
-  if(IN.includes(k)) document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
+  if(IN.includes(k)&&k!=="X") document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();
 }));
 
