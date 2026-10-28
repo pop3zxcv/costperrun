@@ -25,6 +25,8 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 
 - [Subscription vs API](https://costperrun.com/subscription-vs-api/): Turns a Claude Pro or Max plan price into the number of agent runs the plan has to beat at API rates, using the same context-accumulation model, with a break-even by model. Plan usage limits are not published as token or message counts, so the page does not model the quota. Only Anthropic's plan prices are listed.
 
+- [Cost per success](https://costperrun.com/cost-per-success/): Turns an agent's success rate into the cost of a finished task, with failed runs either run again (cost of a run divided by the success rate) or finished by a person (a run plus the failure rate times the person's cost). Lists the lowest success rate at which each other model would cost less per success than the one in use. Success rates are entered by the user; the tool holds no success-rate data for any model.
+
 ## Data
 
 - [models.json](https://costperrun.com/models.json): The canonical pricing dataset. Every rate carries the provider's own pricing URL and the date it was verified.

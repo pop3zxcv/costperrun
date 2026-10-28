@@ -38,6 +38,7 @@ Both figures are correct and they measure different things. 6.2× is the context
 - Prompt cache hit rate
 - 31 models across OpenAI, Anthropic, Google, Meta, xAI, Moonshot and DeepSeek
 - Per-step cost accumulation and cost attribution by component
+- A [cost per success page](https://costperrun.com/cost-per-success/) that turns a success rate into the cost of a finished task and finds the success rate a cheaper model needs to beat yours
 - A [subscription vs API page](https://costperrun.com/subscription-vs-api/) that turns a Claude plan price into the number of agent runs it has to beat at API rates
 
 ## What it does not model

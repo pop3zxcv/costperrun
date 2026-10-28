@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cost per Successful Task for AI Agents | Failed runs are still billed</title>
+<meta name="description" content="A failed agent run is still billed. Turn a success rate into the real cost of a finished task, and see how low a cheaper model's success rate can go before it costs more per success. Free, no signup.">
+<link rel="canonical" href="https://costperrun.com/cost-per-success/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#191919">
+<link rel="preload" as="font" type="font/woff2" href="/ibm-plex-sans-latin-wght-normal.woff2" crossorigin>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://costperrun.com/cost-per-success/">
+<meta property="og:site_name" content="Cost Per Run">
+<meta property="og:title" content="What does a successful agent task actually cost?">
+<meta property="og:description" content="Failed runs are still billed. Cost per success, and the success rate a cheaper model needs to beat the one you use now.">
+<meta property="og:image" content="https://costperrun.com/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What does a successful agent task actually cost?">
+<meta name="twitter:description" content="Failed runs are still billed. Cost per success and the success rate a cheaper model needs.">
+<meta name="twitter:image" content="https://costperrun.com/social-card.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='0' fill='%23191919'/%3E%3Cpath d='M7 24 L13 17 L19 20 L25 8' stroke='%234ade80' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"Cost per successful task for AI agents",
+  "url":"https://costperrun.com/cost-per-success/",
+  "applicationCategory":"DeveloperApplication",
+  "operatingSystem":"Any (web browser)",
+  "description":"Turns an agent's success rate into the cost of a finished task, with failed runs either re-run or finished by a person, and finds the success rate a cheaper model needs to cost less per success. Uses the same context-accumulation model as the Cost Per Run calculator.",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"What is cost per successful task?",
+     "acceptedAnswer":{"@type":"Answer","text":"A failed run is still billed, so the cost of a finished task is higher than the cost of a run. If failed runs are simply run again, cost per success is the cost of one run divided by the success rate. If a person finishes the failed ones, it is the cost of a run plus the failure rate times the person's cost per task. On the default workload a run costs $0.351 on Claude Sonnet 5.5, so at an 80% success rate each completed task costs $0.439, which is 25% more than the run price."}},
+    {"@type":"Question","name":"How low can a cheaper model's success rate go before it costs more per success?",
+     "acceptedAnswer":{"@type":"Answer","text":"Take the cheaper model's cost per run divided by your current model's, and multiply by your current success rate. On the default workload GPT-6 Luna costs $0.018 a run against $0.351 for Claude Sonnet 5.5, a ratio of 0.05, so against an 80% success rate it only needs to complete 4.0% of runs to cost less per success. That is a floor to test with your own measurements, not a statement about how well any model performs. A model that costs more per run, such as Claude Fable 5.1 at five times the price, would need a success rate of 400%, so it cannot win on cost per success at any rate."}},
+    {"@type":"Question","name":"Where do the success rates come from?",
+     "acceptedAnswer":{"@type":"Answer","text":"You enter them. The tool holds no success-rate data for any model, and published benchmarks measure different tasks from yours. Run a sample of your real tasks, count the ones that pass your own acceptance check, and enter that share. Cost per success is only as good as that number."}}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Cost Per Run","item":"https://costperrun.com/"},
+    {"@type":"ListItem","position":2,"name":"Cost per success","item":"https://costperrun.com/cost-per-success/"}
+  ]
+}
+</script>
+
+<style>
+/* ============================================================
+   TYPE
+   IBM Plex, self-hosted. Nothing is fetched from a third party,
+   so the "no data leaves your browser" claim survives; the CSP
+   in _headers allows font-src 'self' only.
+   font-display:swap renders text immediately in the fallback
+   rather than leaving it invisible while the font loads.
+   ============================================================ */
+@font-face{
+  font-family:"IBM Plex Sans";
+  src:url("/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+  font-weight:100 700;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Mono";
+  src:url("/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-weight:400;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Mono";
+  src:url("/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+  font-weight:600;font-style:normal;font-display:swap;
+}
+
+/* ============================================================
+   TOKENS
+   Palette derived from a warm near-black canvas rather than a
+   blue-black one. Green is reserved for data signal only; the
+   primary action is white, so colour never competes with numbers.
+   ============================================================ */
+:root{
+  --bg:#191919;
+  --bg-2:#1c1c1c;
+  --surface:#202020;
+  --surface-2:#262626;
+  --line:#2f2f2f;
+  --line-2:#373737;
+  --txt:#f0efed;
+  --dim:#9b9b9b;
+  --dim-2:#8a8a8a; /* 5.1:1 on --bg. Anything darker fails AA at 11-13px. */
+
+  --accent:#4ade80;
+  --accent-dim:rgba(74,222,128,.10);
+  --blue:#7aa2f7;
+  --amber:#e3b341;
+  --red:#f2777a;
+
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+
+  --r-sm:0; --r:0; --r-lg:0; --r-xl:0;
+  --gut:24px;
+  --max:1200px;
+  --shadow-btn:0 0 0 1px rgba(255,255,255,.2),0 0 24px rgba(0,0,0,.2);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --d-fast:160ms; --d-base:240ms;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+body{
+  background:var(--bg);color:var(--txt);
+  font:400 15px/1.6 var(--sans);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font-family:inherit}
+::selection{background:rgba(74,222,128,.24)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:0}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut);position:relative}
+
+/* Vertical guide rules framing the content column */
+.rules{position:fixed;inset:0;pointer-events:none;z-index:0;display:flex;justify-content:center}
+.rules div{width:100%;max-width:var(--max);border-left:1px solid rgba(240,239,237,.06);border-right:1px solid rgba(240,239,237,.06)}
+@media(max-width:1260px){.rules{display:none}}
+
+main,header,footer{position:relative;z-index:1}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(25,25,25,.82);
+  backdrop-filter:saturate(160%) blur(12px);
+  -webkit-backdrop-filter:saturate(160%) blur(12px);
+  border-bottom:1px solid transparent;
+  transition:border-color .2s var(--ease);
+}
+.nav.stuck{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;letter-spacing:-.01em;flex-shrink:0}
+.brand svg{display:block}
+.navlinks{display:flex;gap:4px;margin-left:8px}
+.navlinks a{
+  font-size:13.5px;font-weight:500;color:var(--dim);
+  padding:7px 12px;border-radius:var(--r-sm);
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.navlinks a:hover{color:var(--txt);background:var(--surface-2)}
+.nav .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+
+.stamp{
+  display:inline-flex;align-items:center;gap:7px;
+  font:500 11.5px/1 var(--mono);letter-spacing:.02em;color:var(--dim);
+  border:1px solid var(--line);border-radius:0;padding:6px 11px;
+  white-space:nowrap;
+}
+.dot{width:6px;height:6px;border-radius:0;background:var(--accent);flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(74,222,128,.14)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  height:34px;padding:0 14px;border-radius:var(--r);
+  font-size:13.5px;font-weight:500;line-height:1;
+  border:1px solid var(--line-2);background:var(--bg);color:var(--txt);
+  cursor:pointer;white-space:nowrap;
+  transition:background .15s var(--ease),border-color .15s var(--ease),color .15s var(--ease),transform .1s var(--ease);
+}
+.btn:hover{background:var(--surface-2);border-color:#4a4a4a}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:#fff;color:#191919;border-color:rgba(255,255,255,.5);box-shadow:var(--shadow-btn)}
+.btn-primary:hover{background:#fff;border-color:#fff;filter:brightness(.94)}
+.btn-ok{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.btn-sm{height:30px;padding:0 11px;font-size:12.5px}
+
+@media(max-width:820px){
+  .navlinks,.nav .stamp{display:none}
+  .nav .wrap{gap:12px}
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding:56px 0 0;text-align:center;position:relative}
+.hero::before{
+  content:"";position:absolute;left:50%;top:-140px;translate:-50% 0;
+  width:min(900px,100%);height:520px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(74,222,128,.07),transparent 62%);
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font:500 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);border:1px solid var(--line);border-radius:0;
+  padding:7px 13px;margin-bottom:28px;background:var(--bg-2);
+}
+h1{
+  font-size:clamp(27px,3.3vw,42px);
+  /* Plex Sans runs wider than Inter, so the measure is wider and the
+     tracking looser than the values that suited the old stack. */
+  font-weight:600;line-height:1.12;letter-spacing:-.02em;
+  max-width:25ch;margin:0 auto;text-wrap:balance;
+}
+h1 em{font-style:normal;color:var(--dim-2)}
+.lede{
+  color:var(--dim);font-size:15.5px;line-height:1.62;
+  max-width:60ch;margin:22px auto 0;text-wrap:pretty;
+}
+.hero-cta{display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.hero-cta .btn{height:42px;padding:0 20px;font-size:14.5px}
+.microcopy{margin-top:16px;font-size:13px;color:var(--dim-2)}
+.microcopy b{color:var(--dim);font-weight:500}
+
+/* Proof strip: the headline claim, stated once, with sources */
+.proof{margin-top:64px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:left}
+.pstat{padding:26px 24px 24px;border-left:1px solid var(--line);position:relative}
+.pstat:first-child{border-left:0}
+.pstat .k{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim-2);display:block;margin-bottom:12px}
+.pstat .v{font:600 21px/1 var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pstat .v small{font-size:13px;font-weight:500;color:var(--dim);margin-left:5px;letter-spacing:0}
+.pstat.hot .v{color:var(--accent)}
+.pstat .bar{position:absolute;left:-1px;top:26px;width:2px;height:18px;background:var(--line-2)}
+.pstat.hot .bar{background:var(--accent)}
+.proof-note{padding:14px 24px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim-2);line-height:1.6}
+.proof-note code{font-family:var(--mono);font-size:12px;color:var(--dim)}
+@media(max-width:900px){
+  .proof-grid{grid-template-columns:repeat(2,1fr)}
+  .pstat:nth-child(3){border-left:0}
+  .pstat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .hero{padding-top:64px}
+}
+@media(max-width:520px){
+  .proof-grid{grid-template-columns:1fr}
+  .pstat{border-left:0;border-bottom:1px solid var(--line)}
+  .pstat .bar{left:0}
+}
+
+/* ============================================================
+   APP
+   ============================================================ */
+.app-section{
+  padding:64px 0 88px;
+  background-image:
+    linear-gradient(rgba(240,239,237,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(240,239,237,.022) 1px,transparent 1px);
+  background-size:44px 44px;
+  background-position:center top;
+}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px;flex-wrap:wrap}
+.sec-head h2{font-size:18px;font-weight:600;letter-spacing:-.02em}
+.sec-head p{color:var(--dim);font-size:14px;margin-top:5px;max-width:58ch}
+
+.app{
+  display:grid;grid-template-columns:352px 1fr;gap:16px;align-items:start;
+}
+/* grid children default to min-width:auto, which lets the nowrap tables
+   below widen the whole column. Pin them to 0 so .scroll does its job. */
+.app > *{min-width:0}
+@media(max-width:1000px){.app{grid-template-columns:1fr}}
+
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+}
+.card + .card{margin-top:16px}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:15px 18px;border-bottom:1px solid var(--line);
+}
+.card-head h3{
+  font:600 11.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2);
+}
+.card-body{padding:18px}
+
+/* presets */
+.presets{display:flex;flex-wrap:wrap;gap:6px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.preset{
+  background:transparent;border:1px solid var(--line);color:var(--dim);
+  font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:0;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease);
+}
+.preset:hover{color:var(--txt);border-color:var(--line-2);background:var(--surface-2)}
+.preset.on{background:var(--accent-dim);border-color:rgba(74,222,128,.4);color:var(--accent)}
+
+/* fields */
+.f{margin-bottom:19px}
+.f:last-child{margin-bottom:4px}
+.f label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13.5px;color:var(--dim);margin-bottom:9px}
+.f label b{color:var(--txt);font:500 13.5px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.hint{display:block;font-size:11.5px;color:var(--dim-2);margin-top:7px;line-height:1.5}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;display:block;
+  touch-action:manipulation;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:4px;border-radius:0;
+  background:linear-gradient(90deg,var(--accent) 0 var(--p,0%),var(--line-2) var(--p,0%) 100%);
+}
+input[type=range]::-moz-range-track{height:4px;border-radius:0;background:var(--line-2)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:0;background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:0;
+  background:#fff;border:none;margin-top:-6px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 1px 4px rgba(0,0,0,.5);
+  transition:transform .12s var(--ease);
+}
+input[type=range]::-moz-range-thumb{
+  width:16px;height:16px;border-radius:0;background:#fff;border:none;
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 1px 4px rgba(0,0,0,.5);
+}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.12)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.02)}
+
+input[type=number],select{
+  width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--txt);
+  padding:0 11px;height:38px;border-radius:var(--r);
+  font:14px var(--mono);font-variant-numeric:tabular-nums;
+  transition:border-color .15s var(--ease);
+}
+select{
+  appearance:none;-webkit-appearance:none;padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' stroke='%239b9b9b' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+}
+input[type=number]:hover,select:hover{border-color:var(--line-2)}
+input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
+
+/* result hero */
+.result{
+  background:linear-gradient(160deg,#1d2620 0%,var(--surface) 55%);
+  border-color:rgba(74,222,128,.2);
+}
+.result .card-head{border-bottom-color:rgba(74,222,128,.14)}
+.model-tag{font:500 12.5px var(--mono);color:var(--accent);text-transform:none;letter-spacing:0}
+.figs{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:20px;align-items:end}
+.card-head .opt{font:500 10.5px var(--mono);letter-spacing:.08em;color:var(--dim-2);margin-left:10px;text-transform:uppercase}
+.hv-in>summary{cursor:pointer;list-style:none;border-bottom:0}
+.hv-in>summary::-webkit-details-marker{display:none}
+.hv-in>summary::after{content:"+";font:500 15px/1 var(--mono);color:var(--dim-2)}
+.hv-in[open]>summary::after{content:"\2212"}
+.hv-in>summary:hover::after{color:var(--txt)}
+.hv-in[open]>summary{border-bottom:1px solid var(--line)}
+.card[hidden]{display:none}
+.chk{display:flex;gap:11px;align-items:flex-start;margin:0 0 17px;font-size:13.5px;color:var(--dim);cursor:pointer}
+.chk:last-child{margin-bottom:0}
+.chk input{flex:none;width:16px;height:16px;margin:2px 0 0;accent-color:var(--accent)}
+.chk .hint{margin-top:5px}
+.note.succ{margin-top:18px;padding-top:0;border-top:0;font-size:13.5px;color:var(--dim)}
+.note.succ[hidden]{display:none}
+.note.succ b{font:600 15px var(--mono);color:var(--txt);letter-spacing:-.02em}
+.spread{padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.6;color:var(--dim)}
+.spread b{font:600 14px var(--mono);color:var(--txt)}
+.spread:empty{display:none}
+.fig .v.win{color:var(--accent)}
+.fig .v.lose{color:var(--amber)}
+.fig .v{font:600 clamp(25px,2.4vw,31px)/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.fig .v.sm{font-size:clamp(15px,1.5vw,17px);color:var(--dim);letter-spacing:-.02em}
+.fig .l{font:500 10.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2);margin-top:11px}
+@media(max-width:640px){
+  .figs{grid-template-columns:1fr 1fr;gap:18px}
+  .fig:first-child{grid-column:1/-1}
+  /* Phones: the comparison table keeps rank, model, per run and vs. best. Per month is in the
+     sticky bar for the selected model, and the bar column carries no scale. Without this the
+     table is 645px wide in a 325px scroller and clips the per-run figures mid-digit. */
+  .cmp-tbl th:nth-child(4),.cmp-tbl td:nth-child(4),.cmp-tbl th:nth-child(6),.cmp-tbl td:nth-child(6){display:none}
+  .cmp-tbl th,.cmp-tbl td{padding-left:10px;padding-right:10px}
+  .cmp-tbl td:nth-child(2){white-space:normal}
+  .cmp-tbl .tag,.cmp-tbl .flag{white-space:normal;margin-left:0;display:flex;margin-top:2px}
+  .step-tbl th:nth-child(5),.step-tbl td:nth-child(5){display:none}
+  .step-tbl th,.step-tbl td{padding-left:10px;padding-right:10px}
+  .step-tbl th{white-space:normal;vertical-align:bottom}
+}
+
+.acts{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
+
+.insight{
+  margin-top:20px;padding:14px 16px;border-radius:var(--r);
+  background:rgba(227,179,65,.06);border:1px solid rgba(227,179,65,.2);
+  font-size:13.5px;line-height:1.62;color:#e7ddc6;
+}
+.insight b{color:var(--amber);font-weight:600}
+
+/* attribution */
+.split{display:flex;gap:2px;height:34px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:16px}
+.split div{transition:width .35s var(--ease)}
+@media(prefers-reduced-motion:reduce){.split div{transition:none}}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px}
+.legend span{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim)}
+.legend i{width:8px;height:8px;border-radius:0;flex-shrink:0}
+.legend b{color:var(--txt);font:500 12.5px var(--mono);font-variant-numeric:tabular-nums}
+
+.note{
+  font-size:12.5px;color:var(--dim-2);line-height:1.65;
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--line);
+}
+.note code{
+  font-family:var(--mono);font-size:12px;color:var(--txt);
+  background:var(--surface-2);padding:2px 6px;border-radius:0;
+  font-variant-numeric:tabular-nums;
+}
+
+/* tables */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{
+  text-align:left;font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim-2);padding:13px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
+  background:var(--surface);position:sticky;top:0;
+}
+th.r,td.r{text-align:right}
+td{padding:11px 14px;border-bottom:1px solid #242424;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background .12s var(--ease)}
+tbody tr:hover{background:var(--surface-2)}
+td.m{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.rank{font:500 11px var(--mono);color:var(--dim-2);width:1%}
+.mname{font-weight:500}
+.prov{display:block;font-size:11px;color:var(--dim-2);margin-top:2px;font-weight:400}
+.best{color:var(--accent)}
+.report{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--txt);text-decoration:underline;text-underline-offset:3px}
+.report:hover{color:var(--accent)}
+.mbtn{all:unset;cursor:pointer;display:inline-flex;align-items:flex-start;gap:6px;color:var(--txt)}
+.mbtn .ico{color:var(--dim-2);margin-top:3px;transition:transform var(--d-fast) var(--ease-out)}
+.mbtn[aria-expanded="true"] .ico{transform:rotate(90deg)}
+.mbtn:hover .mname{text-decoration:underline;text-underline-offset:3px}
+.mbtn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+tr.detail td{padding-top:0;white-space:normal}
+.dwrap{font-size:12.5px;line-height:1.6;color:var(--dim);padding:0 0 4px 18px;animation:dIn var(--d-base) var(--ease-out)}
+.dwrap .m{color:var(--txt)}
+.dwrap a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+@keyframes dIn{from{opacity:0;transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.dwrap{animation:none}.mbtn .ico{transition:none}}
+.tag{display:inline-flex;align-items:center;gap:4px;margin-left:6px;color:var(--amber);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.ico{flex:none;display:inline-block;vertical-align:-2px}
+.promo-note{list-style:none;margin:0;padding:12px 14px 14px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:12.5px;line-height:1.5;color:var(--dim)}
+.promo-note:empty{display:none}
+.promo-note li{display:flex;gap:8px;align-items:flex-start}
+.promo-note .ico{color:var(--amber);margin-top:2px}
+.promo-note a{color:var(--txt);text-decoration:underline;text-underline-offset:3px}
+.flag{display:inline-flex;align-items:center;gap:4px;margin-left:6px;color:var(--amber);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.flag.bad{color:var(--red)}
+.promo-note li.bad .ico{color:var(--red)}
+tr.nofit td,tr.nofit .mname,tr.nofit .prov{color:var(--dim-2)}
+.bar-cell{width:120px;min-width:120px}
+.bar{height:5px;border-radius:0;background:var(--blue);opacity:.6;min-width:3px}
+.skip td{color:var(--dim-2);font-family:var(--mono);font-size:11px;padding:6px 14px;letter-spacing:.1em}
+
+/* mobile summary bar */
+.mobile-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;
+  align-items:center;justify-content:space-between;gap:16px;
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(25,25,25,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+}
+.mobile-bar .l{font:500 10.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2)}
+.mobile-bar .v{font:600 19px/1 var(--mono);letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.mobile-bar .m{font-size:12px;color:var(--dim);text-align:right}
+@media(max-width:1000px){.mobile-bar{display:flex}body{padding-bottom:74px}}
+
+/* ============================================================
+   PROSE
+   ============================================================ */
+.prose{padding:80px 0;border-top:1px solid var(--line)}
+.prose-inner{max-width:70ch}
+.prose h2{font-size:clamp(19px,2vw,25px);font-weight:600;letter-spacing:-.028em;margin-bottom:14px}
+.prose h3{font-size:16.5px;font-weight:600;letter-spacing:-.015em;margin:38px 0 10px}
+.prose p{color:var(--dim);margin-bottom:13px;font-size:15px;line-height:1.65;text-wrap:pretty}
+.prose p b,.prose li b{color:var(--txt);font-weight:600}
+.prose code{font-family:var(--mono);font-size:13.5px;color:var(--accent);background:var(--surface);padding:2px 6px;border-radius:0}
+.formula{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:20px 22px;margin:20px 0;overflow-x:auto;
+  font:13.5px/1.7 var(--mono);color:var(--accent);letter-spacing:-.01em;
+}
+.levers{list-style:none;counter-reset:l;margin:20px 0 0}
+.levers li{
+  counter-increment:l;position:relative;padding:18px 0 18px 52px;border-top:1px solid var(--line);
+  color:var(--dim);font-size:15px;line-height:1.62;
+}
+.levers li:last-child{border-bottom:1px solid var(--line)}
+.levers li::before{
+  content:counter(l,decimal-leading-zero);position:absolute;left:0;top:18px;
+  font:500 12px/1 var(--mono);color:var(--dim-2);letter-spacing:.06em;
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:6px 8px;
+}
+.levers strong{color:var(--txt);font-weight:600;display:block;margin-bottom:4px;font-size:15.5px}
+
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{
+  cursor:pointer;list-style:none;padding:22px 0;
+  font-size:16.5px;font-weight:500;letter-spacing:-.012em;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"";width:11px;height:11px;flex-shrink:0;
+  border-right:1.5px solid var(--dim);border-bottom:1.5px solid var(--dim);
+  rotate:45deg;translate:0 -3px;transition:rotate .2s var(--ease);
+}
+.faq details[open] summary::after{rotate:225deg;translate:0 2px}
+.faq summary:hover{color:#fff}
+.faq .a{padding:0 0 24px;color:var(--dim);font-size:15px;line-height:1.68;max-width:70ch}
+
+.limits{
+  border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);
+  padding:22px 24px;margin-top:28px;
+}
+.limits h4{font:600 11.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2);margin-bottom:14px}
+.limits p{font-size:14px;margin-bottom:0;line-height:1.68}
+
+footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-2)}
+.foot{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:flex-start}
+.foot p{font-size:12.5px;color:var(--dim-2);line-height:1.75;max-width:68ch}
+.foot p b{color:var(--dim);font-weight:500}
+.foot .brand{margin-bottom:12px}
+
+/* Touch sizing. Pointer-coarse and small screens both get 44px targets. */
+@media(max-width:820px),(pointer:coarse){
+  .btn{height:44px;padding:0 18px}
+  .btn-sm{height:40px;padding:0 14px;font-size:13px}
+  .preset{padding:11px 14px;font-size:13px}
+  .presets{gap:8px}
+  input[type=range]{height:44px}
+  /* iOS zooms the viewport when a focused field is under 16px. */
+  input[type=number],select{height:44px;font-size:16px}
+  .faq summary{padding:20px 0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+<style>
+.be-tbl td,.be-tbl th{padding-left:14px;padding-right:14px}
+.be-tbl th{white-space:normal;line-height:1.35}
+.be-tbl td:first-child,.be-tbl th:first-child{padding-left:18px}
+.be-tbl td:last-child,.be-tbl th:last-child{padding-right:18px}
+.be-tbl td:first-child{white-space:normal}
+.be-tbl .mname{font-weight:500}
+.be-tbl .prov{display:block;font-size:11.5px;color:var(--dim-2);margin-top:2px}
+.be-tbl tr.nofit td{color:var(--dim-2)}
+.be-tbl tr.sel td{background:var(--accent-dim)}
+.be-tbl .win{color:var(--accent)}
+.be-tbl .lose{color:var(--dim-2)}
+.verdict{margin-top:20px;padding:14px 16px;background:rgba(227,179,65,.06);border:1px solid rgba(227,179,65,.2);font-size:13.5px;line-height:1.62;color:#e7ddc6}
+.verdict b{color:var(--amber);font-weight:600}
+.cannot{font-size:13.5px;line-height:1.68;color:var(--dim)}
+.cannot ul{margin:10px 0 0 18px;display:grid;gap:7px}
+.cannot li::marker{color:var(--dim-2)}
+.seg{display:grid;gap:9px;margin-top:2px}
+.seg label{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--dim);cursor:pointer;margin:0}
+.seg input{flex:none;width:16px;height:16px;margin:2px 0 0;accent-color:var(--accent)}
+.seg .hint{margin-top:3px}
+.ppl[hidden]{display:none}
+@media (max-width:640px){.be-tbl .hm{display:none}.be-tbl td,.be-tbl th{padding-left:10px;padding-right:10px}.be-tbl .prov{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="rules" aria-hidden="true"><div></div></div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect width="32" height="32" rx="0" fill="#202020" stroke="#373737"/>
+        <path d="M7 24 L13 17 L19 20 L25 8" stroke="#4ade80" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      costperrun
+    </a>
+    <nav class="navlinks">
+      <a href="/">Calculator</a>
+      <a href="/subscription-vs-api/">Subscription vs API</a>
+      <a href="#calculator">Cost per success</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="right">
+      <span class="stamp"><span class="dot"></span>Prices verified Oct 2026</span>
+      <a class="btn btn-primary" href="#calculator">Run the numbers</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Cost per success</span>
+    <h1>What does a <em>successful</em> agent task cost?</h1>
+    <p class="lede">A run that fails is still billed. The price of a finished task is the price of a run divided by how often a run finishes, so a cheap model that fails often can cost more than an expensive one that does not. Enter your own success rate and see where each model lands.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#calculator">Run the numbers</a>
+      <a class="btn" href="/">Price one run first</a>
+    </div>
+    <p class="microcopy">No signup · Nothing leaves your browser · Success rates are yours, not ours</p>
+  </div>
+</section>
+
+<section class="app-section" id="calculator">
+<div class="wrap">
+
+  <div class="sec-head">
+    <div>
+      <h2>Price a finished task</h2>
+      <p>Pick the model you use now and your measured success rate. The table shows the lowest success rate at which every other model would cost less per success. The URL keeps your settings.</p>
+    </div>
+    <div class="acts" style="margin:0">
+      <button class="btn btn-sm" id="bShare">Copy link</button>
+      <button class="btn btn-sm" id="bReset">Reset</button>
+    </div>
+  </div>
+
+  <div class="app">
+
+  <div>
+    <div class="card">
+      <div class="card-head"><h3>Your model</h3></div>
+      <div class="card-body">
+        <div class="f">
+          <label for="M">Model you use now</label>
+          <select id="M"></select>
+        </div>
+        <div class="f">
+          <label for="X">Runs that complete the task <b id="lX">80%</b></label>
+          <input type="range" id="X" min="5" max="100" step="5" value="80" aria-describedby="hX">
+          <span class="hint" id="hX">Your measured rate. 80% is a placeholder.</span>
+        </div>
+        <div class="f" style="margin-bottom:0">
+          <label>When a run fails</label>
+          <div class="seg">
+            <label><input type="radio" name="F" value="rerun" checked><span>Run it again until it works<span class="hint">Cost per success is the cost of a run divided by the success rate.</span></span></label>
+            <label><input type="radio" name="F" value="person"><span>A person finishes it<span class="hint">Cost per task is a run plus the failure rate times the person's cost.</span></span></label>
+          </div>
+        </div>
+        <div class="ppl" id="ppl" hidden>
+          <div class="f" style="margin-top:19px">
+            <label for="PM">Minutes a person spends on one task</label>
+            <input type="number" id="PM" value="15" min="0" step="5" inputmode="numeric">
+          </div>
+          <div class="f" style="margin-bottom:0">
+            <label for="PR">Their fully loaded cost per hour (USD)</label>
+            <input type="number" id="PR" value="40" min="0" step="5" inputmode="numeric">
+            <span class="hint">Both are placeholders. Use your own figures.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>One run</h3></div>
+      <div class="card-body"><div id="sliders"></div><span class="hint" style="margin-top:0">Standard rates. The batch and cache-write options on the calculator are not carried over.</span></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card result">
+      <div class="card-head">
+        <h3>Cost per success</h3>
+        <span class="model-tag" id="mName">…</span>
+      </div>
+      <div class="card-body">
+        <div class="figs" aria-live="polite">
+          <div class="fig"><div class="v" id="cps">···</div><div class="l">Per completed task</div></div>
+          <div class="fig"><div class="v sm" id="cpr">···</div><div class="l">Per run</div></div>
+          <div class="fig"><div class="v sm" id="succ">···</div><div class="l">Success rate</div></div>
+          <div class="fig"><div class="v sm" id="extra">···</div><div class="l">Added by failures</div></div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Success rate a model needs to beat yours</h3></div>
+      <div class="scroll">
+      <table class="be-tbl">
+        <thead><tr>
+          <th>Model</th><th class="r">Per run</th><th class="r">Needs a success rate above</th><th class="r hm">Cost per success at your rate</th>
+        </tr></thead>
+        <tbody id="bem"></tbody>
+      </table>
+      </div>
+      <div class="card-body" style="padding-top:0">
+        <div class="note" style="margin-top:0;border-top:0;padding-top:16px">This is a floor to test against your own measurements, not a claim about how well any model performs. "Cannot" means the model costs more per run than your cost per success, so no success rate up to 100% gets it there. A model whose last request is larger than its context window is greyed out. Long-context price tiers are not modelled here; <a href="/" style="color:var(--dim);text-decoration:underline">the calculator</a> flags them.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Your model at other success rates</h3></div>
+      <div class="scroll">
+      <table class="be-tbl">
+        <thead><tr><th>Success rate</th><th class="r">Per completed task</th><th class="r">Against a perfect run</th></tr></thead>
+        <tbody id="sens"></tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>What this cannot tell you</h3></div>
+      <div class="card-body cannot">
+        How often any model finishes your task. The tool holds no success-rate data, and published benchmarks measure other tasks.
+        <ul>
+          <li>It treats a run as pass or fail. A run that is partly right and needs a person to fix it is closest to the second option above.</li>
+          <li>Retries inside a run are priced by the retry rate. The success rate is a separate, whole-run outcome.</li>
+          <li>Time spent checking output, and upkeep, are not priced.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</section>
+
+<section class="prose faq" id="faq" style="padding-top:56px">
+  <div class="wrap">
+    <div class="prose-inner">
+      <h2 style="margin-bottom:24px">Questions</h2>
+
+      <details open>
+        <summary>What is cost per successful task?</summary>
+        <div class="a">A failed run is still billed, so the cost of a finished task is higher than the cost of a run. If failed runs are simply run again, cost per success is the cost of one run divided by the success rate. If a person finishes the failed ones, it is the cost of a run plus the failure rate times the person's cost per task. On the default workload a run costs $0.351 on Claude Sonnet 5.5, so at an 80% success rate each completed task costs $0.439, which is 25% more than the run price.</div>
+      </details>
+
+      <details>
+        <summary>How low can a cheaper model's success rate go before it costs more per success?</summary>
+        <div class="a">Take the cheaper model's cost per run divided by your current model's, and multiply by your current success rate. On the default workload GPT-6 Luna costs $0.018 a run against $0.351 for Claude Sonnet 5.5, a ratio of 0.05, so against an 80% success rate it only needs to complete 4.0% of runs to cost less per success. That is a floor to test with your own measurements, not a statement about how well any model performs. A model that costs more per run, such as Claude Fable 5.1 at five times the price, would need a success rate of 400%, so it cannot win on cost per success at any rate.</div>
+      </details>
+
+      <details>
+        <summary>Where do the success rates come from?</summary>
+        <div class="a">You enter them. The tool holds no success-rate data for any model, and published benchmarks measure different tasks from yours. Run a sample of your real tasks, count the ones that pass your own acceptance check, and enter that share. Cost per success is only as good as that number.</div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="brand" href="/">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="0" fill="#202020" stroke="#373737"/>
+          <path d="M7 24 L13 17 L19 20 L25 8" stroke="#4ade80" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        costperrun
+      </a>
+      <p>Free. No signup. No tracking. No data leaves your browser.</p>
+      <a class="report" href="https://github.com/pop3zxcv/costperrun/issues" rel="noopener noreferrer" target="_blank"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>Report a stale price</a>
+    </div>
+    <p>Model prices checked against each provider's own pricing page on <b>28 October 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
+  </div>
+</footer>
+
+<script>
+const MODELS=[
+ {id:"gpt-6-astra",   p:"OpenAI",   n:"GPT-6 Astra",     i:10.00, c:1.00,   o:50.00, w:1050000},
+ {id:"gpt-6-1-sol",   p:"OpenAI",   n:"GPT-6.1 Sol",     i:2.00,  c:0.10,   o:10.00, w:1050000},
+ {id:"gpt-6-1-terra", p:"OpenAI",   n:"GPT-6.1 Terra",   i:1.00,  c:0.05,   o:5.00, w:1050000},
+ {id:"gpt-6-luna",    p:"OpenAI",   n:"GPT-6 Luna",      i:0.10,  c:0.01,   o:0.50, w:1050000},
+ {id:"gpt-5-6-sol",   p:"OpenAI",   n:"GPT-5.6 Sol",     i:4.00,  c:0.40,   o:20.00, w:1050000},
+ {id:"gpt-5-6-terra", p:"OpenAI",   n:"GPT-5.6 Terra",   i:2.00,  c:0.20,   o:12.00, w:1050000},
+ {id:"gpt-5-6-luna",  p:"OpenAI",   n:"GPT-5.6 Luna",    i:0.20,  c:0.02,   o:1.20, w:1050000},
+ {id:"fable-5-1",     p:"Anthropic",n:"Claude Fable 5.1",i:10.00, c:0.25,   o:50.00, w:1000000},
+ {id:"opus-5-5",      p:"Anthropic",n:"Claude Opus 5.5", i:4.00,  c:0.20,   o:20.00, w:1000000},
+ {id:"sonnet-5-5",    p:"Anthropic",n:"Claude Sonnet 5.5",i:2.00, c:0.10,   o:10.00, w:1000000},
+ {id:"fable-5",       p:"Anthropic",n:"Claude Fable 5",  i:10.00, c:1.00,   o:50.00, w:1000000},
+ {id:"opus-5",        p:"Anthropic",n:"Claude Opus 5",   i:5.00,  c:0.50,   o:25.00, w:1000000},
+ {id:"sonnet-5",      p:"Anthropic",n:"Claude Sonnet 5", i:2.00,  c:0.20,   o:10.00, w:1000000},
+ {id:"haiku-5-5",     p:"Anthropic",n:"Claude Haiku 5.5",i:0.10,  c:0.01,   o:0.50, w:1000000},
+ {id:"haiku-4-5",     p:"Anthropic",n:"Claude Haiku 4.5",i:1.00,  c:0.10,   o:5.00, w:200000},
+ {id:"gemini-4-argon",p:"Google",   n:"Gemini 4 Argon",  i:2.00,  c:0.10,   o:10.00, w:1048576},
+ {id:"gemini-3-1-pro",p:"Google",   n:"Gemini 3.1 Pro",  i:2.00,  c:0.20,   o:12.00, w:1048576},
+ {id:"gemini-3-8-fl", p:"Google",   n:"Gemini 3.8 Flash",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-3-7-fl", p:"Google",   n:"Gemini 3.7 Flash (routed to 3.8)",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-3-6-fl", p:"Google",   n:"Gemini 3.6 Flash",i:0.75,  c:0.075,  o:3.75, w:1048576},
+ {id:"gemini-2-5-pro",p:"Google",   n:"Gemini 2.5 Pro",  i:1.25,  c:0.125,  o:10.00, w:1048576},
+ {id:"grok-4-7",      p:"xAI",      n:"Grok 4.7",        i:2.00,  c:0.50,   o:6.00, w:500000},
+ {id:"grok-4-6",      p:"xAI",      n:"Grok 4.6",        i:2.00,  c:0.50,   o:6.00, w:500000},
+ {id:"grok-4-5",      p:"xAI",      n:"Grok 4.5",        i:2.00,  c:0.30,   o:6.00, w:500000},
+ {id:"grok-4-3",      p:"xAI",      n:"Grok 4.3",        i:1.25,  c:0.20,   o:2.50, w:1000000},
+ {id:"muse-wonder-1-0",p:"Meta",    n:"Muse Wonder 1.0", i:4.00,  c:0.20,   o:20.00, w:1048576},
+ {id:"muse-spark-1-3",p:"Meta",     n:"Muse Spark 1.3",  i:1.25,  c:0.15,   o:4.25, w:1048576},
+ {id:"kimi-k3-1-pro", p:"Moonshot", n:"Kimi K3.1 Pro",   i:2.00,  c:0.20,   o:10.00, w:1048576},
+ {id:"kimi-k3",       p:"Moonshot", n:"Kimi K3",         i:3.00,  c:0.30,   o:15.00, w:1048576},
+ {id:"deepseek-v4-pro",p:"DeepSeek",n:"DeepSeek V4 Pro", i:1.32,  c:0.044,  o:3.96, w:1000000},
+ {id:"deepseek-v4-fl",p:"DeepSeek", n:"DeepSeek V4.1 Flash",i:0.30, c:0.006, o:1.20, w:1000000}
+];
+
+const FIELDS=[
+ {k:"S",label:"System prompt and tool schemas",min:0,max:30000,step:250,v:2000},
+ {k:"U",label:"User input or task",min:0,max:50000,step:250,v:500},
+ {k:"N",label:"Steps per run",min:1,max:100,step:1,v:12},
+ {k:"O",label:"Model output per step",min:50,max:8000,step:50,v:400},
+ {k:"T",label:"Tool result per step",min:0,max:20000,step:100,v:1200},
+ {k:"R",label:"Retry or failure rate",min:0,max:100,step:5,v:10,pct:true},
+ {k:"C",label:"Prompt cache hit rate",min:0,max:95,step:5,v:0,pct:true}
+];
+const DEFAULTS={m:"sonnet-5-5",x:80,f:"rerun",pm:15,pr:40};
+const $=id=>document.getElementById(id);
+const money=v=> v>=100? "$"+v.toLocaleString(undefined,{maximumFractionDigits:0})
+              : v>=1 ? "$"+v.toFixed(2)
+              : v>=0.01? "$"+v.toFixed(3) : "$"+v.toFixed(5);
+const num=v=>v.toLocaleString();
+const pctf=v=> v>=10? Math.round(v)+"%" : v>=1? v.toFixed(1)+"%" : v>0? v.toFixed(2)+"%" : "0%";
+
+/* same loop as the main calculator, standard rates, no batch and no cache-write charge */
+function costPerRun(m,p){
+  let total=0;
+  for(let i=1;i<=p.N;i++){
+    const ctx=p.S+p.U+(i-1)*(p.O+p.T), cached=ctx*p.C, fresh=ctx-cached;
+    total+=(cached*m.c + fresh*m.i + p.O*m.o)/1e6;
+  }
+  return total*(1+p.R);
+}
+const fits=(m,p)=> p.S+p.U+(p.N-1)*(p.O+p.T)+p.O<=m.w;
+
+/* cost of one finished task, and the lowest success rate at which a model with run cost cM matches cost tC */
+const taskCost=(c,s,mode,P)=> mode==="person"? c+(1-s)*P : c/s;
+function needRate(cM,tC,mode,P){
+  if(mode==="person") return P>0? 1-(tC-cM)/P : (cM<=tC?0:Infinity);
+  return cM/tC;           /* c/s <= tC  =>  s >= c/tC */
+}
+
+$("sliders").innerHTML=FIELDS.map(f=>`<div class="f">
+  <label for="${f.k}">${f.label} <b id="l${f.k}">${f.v}${f.pct?"%":""}</b></label>
+  <input type="range" id="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${f.v}">
+</div>`).join("");
+$("M").innerHTML=MODELS.map((m,i)=>`<option value="${i}">${m.n} · ${m.p}</option>`).join("");
+$("M").value=MODELS.findIndex(x=>x.id===DEFAULTS.m);
+
+const mode=()=>document.querySelector('input[name="F"]:checked').value;
+function read(){
+  const p={}; FIELDS.forEach(f=>p[f.k]=+$(f.k).value);
+  p.R/=100; p.C/=100; return p;
+}
+function paintRange(el){ el.style.setProperty("--p",((+el.value-+el.min)/(+el.max-+el.min)*100)+"%"); }
+
+function writeURL(){
+  const q=new URLSearchParams();
+  FIELDS.forEach(f=>{ if(+$(f.k).value!==f.v) q.set(f.k.toLowerCase(),$(f.k).value); });
+  const mid=MODELS[+$("M").value].id; if(mid!==DEFAULTS.m) q.set("m",mid);
+  if(+$("X").value!==DEFAULTS.x) q.set("x",$("X").value);
+  if(mode()!==DEFAULTS.f){ q.set("f",mode()); if(+$("PM").value!==DEFAULTS.pm) q.set("pm",$("PM").value); if(+$("PR").value!==DEFAULTS.pr) q.set("pr",$("PR").value); }
+  const s=q.toString(); history.replaceState(null,"",s? "?"+s : location.pathname);
+}
+function readURL(){
+  const q=new URLSearchParams(location.search);
+  FIELDS.forEach(f=>{ const v=q.get(f.k.toLowerCase()); if(v!==null && !isNaN(+v)) $(f.k).value=+v; });
+  const m=q.get("m"); if(m){ const i=MODELS.findIndex(x=>x.id===m); if(i>=0) $("M").value=i; }
+  const x=q.get("x"); if(x!==null && !isNaN(+x) && +x>=5 && +x<=100) $("X").value=+x;
+  if(q.get("f")==="person"){ document.querySelector('input[name="F"][value="person"]').checked=true;
+    const pm=q.get("pm"), pr=q.get("pr"); if(pm!==null&&!isNaN(+pm)) $("PM").value=+pm; if(pr!==null&&!isNaN(+pr)) $("PR").value=+pr; }
+}
+
+function render(){
+  const p=read(), m=MODELS[+$("M").value], s=(+$("X").value)/100, md=mode();
+  const P=(+$("PM").value||0)/60*(+$("PR").value||0);
+  $("ppl").hidden= md!=="person";
+  FIELDS.forEach(f=>{ paintRange($(f.k)); $("l"+f.k).textContent=num(+$(f.k).value)+(f.pct?"%":""); });
+  paintRange($("X")); $("lX").textContent=$("X").value+"%";
+
+  const c=costPerRun(m,p), t=taskCost(c,s,md,P), add=t-c;
+  $("mName").textContent=m.n;
+  $("cps").textContent=money(t);
+  $("cpr").textContent=money(c);
+  $("succ").textContent=Math.round(s*100)+"%";
+  $("extra").textContent=add>0? "+"+money(add) : "none";
+  $("verdict").innerHTML= md==="person" && !(P>0)
+    ? `Enter the minutes a person spends on one task and their hourly cost to price the failed runs they finish.`
+    : md==="person"
+    ? `With a <b>${Math.round(s*100)}% success rate</b> a task costs <b>${money(t)}</b> on average: the ${money(c)} run, plus the ${Math.round((1-s)*100)}% of runs that fail finished by a person at ${money(P)} a task.`
+    : `With a <b>${Math.round(s*100)}% success rate</b> each completed task costs <b>${money(t)}</b>, ${c>0? "+"+Math.round(add/c*100)+"%" : "0%"} on top of the ${money(c)} run price. Failed runs are run again until one works.`;
+
+  const rows=MODELS.map(x=>({x,c:costPerRun(x,p),ok:fits(x,p)})).sort((a,b)=>(b.ok-a.ok)||(a.c-b.c));
+  $("bem").innerHTML=rows.map(r=>{
+    const need=needRate(r.c,t,md,P), isCur=r.x.id===m.id;
+    let cell;
+    if(isCur) cell=`<span class="lose">your model</span>`;
+    else if(need>1) cell=`<span class="lose">cannot</span>`;
+    else if(need<=0) cell=`<span class="win">any rate</span>`;
+    else cell=`<span class="win">${pctf(need*100)}</span>`;
+    return `<tr class="${r.ok?"":"nofit"}${isCur?" sel":""}">
+    <td><span class="mname">${r.x.n}</span><span class="prov">${r.x.p}${r.ok?"":" · last request is larger than its context window"}</span></td>
+    <td class="r m">${money(r.c)}</td>
+    <td class="r m">${cell}</td>
+    <td class="r m hm">${money(taskCost(r.c,s,md,P))}</td></tr>`;}).join("");
+
+  $("sens").innerHTML=[100,90,80,70,60,50,40,30,20,10].map(v=>{
+    const tt=taskCost(c,v/100,md,P);
+    return `<tr class="${v===Math.round(s*100)?"sel":""}"><td class="m">${v}%</td><td class="r m">${money(tt)}</td><td class="r m">${c>0? "+"+Math.round((tt/c-1)*100)+"%" : "0%"}</td></tr>`;}).join("");
+  writeURL();
+}
+
+[...FIELDS.map(f=>f.k),"M","X","PM","PR"].forEach(k=>$(k).addEventListener("input",render));
+document.querySelectorAll('input[name="F"]').forEach(r=>r.addEventListener("change",render));
+function copy(text,btn,label){
+  const done=()=>{const o=btn.textContent;btn.textContent=label;btn.classList.add("btn-ok");setTimeout(()=>{btn.textContent=o;btn.classList.remove("btn-ok")},1600)};
+  if(navigator.clipboard&&window.isSecureContext){ navigator.clipboard.writeText(text).then(done).catch(()=>{}); }
+  else{ const ta=document.createElement("textarea"); ta.value=text; ta.style.cssText="position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");done()}catch(e){} document.body.removeChild(ta); }
+}
+$("bShare").onclick=()=>copy(location.href,$("bShare"),"Link copied");
+$("bReset").onclick=()=>{
+  FIELDS.forEach(f=>$(f.k).value=f.v); $("M").value=MODELS.findIndex(x=>x.id===DEFAULTS.m);
+  $("X").value=DEFAULTS.x; $("PM").value=DEFAULTS.pm; $("PR").value=DEFAULTS.pr;
+  document.querySelector('input[name="F"][value="rerun"]').checked=true; render();
+};
+addEventListener("scroll",()=>{ $("nav").classList.toggle("stuck",scrollY>8); },{passive:true});
+readURL();
+render();
+</script>
+</body>
+</html>
