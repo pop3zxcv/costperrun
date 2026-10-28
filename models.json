@@ -9,7 +9,8 @@
     "batchApi": "batchMultiplier is each rate's batch price divided by its standard price. OpenAI, Anthropic and Google halve input and output; OpenAI and Anthropic halve cache rates too, while Gemini 3.1 Pro and 2.5 Pro keep the standard cache price in batch. xAI's batch price is 0.8x on every rate (priceMultiplier 0.8 on its model pages). DeepSeek, Meta and Moonshot's K3 models have no batch API (Moonshot's batch covers K2 only). Batch results arrive within 24 hours, so each agent step waits on the previous one: the option suits offline runs, not live agents.",
     "longContext": "Four providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. Claude Haiku 5.5 changes at 100K prompt tokens: 0.10/0.01/0.50 -> 0.50/0.05/2.50 for the whole request, cache reads counted toward the 100K. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, GPT-6.1 Sol 2/10 -> 4/15, GPT-6 Luna 0.10/0.50 -> 0.20/0.75, GPT-5.6 Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K. The other Claude models carry no long-context tier.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, excluding Chinese public holidays. All other hours are off-peak. This dataset lists PEAK.",
-    "promotionalRates": "Gemini 4 Argon is on an introductory rate through 2026-11-30 and doubles on 2026-12-01. Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled."
+    "promotionalRates": "Gemini 4 Argon is on an introductory rate through 2026-11-30 and doubles on 2026-12-01. Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled.",
+    "subscriptions": "Plan prices for the subscription-vs-api page. Only Anthropic's are listed: ChatGPT's pricing page showed prices in the visitor's local currency (AED) on 2026-10-28 and no US dollar figure could be confirmed from a primary page. Google AI plan pages were localised the same way. No provider publishes plan usage limits as a token or message count, so the page converts the plan price into runs at API rates and does not model the quota. Anthropic lists $100 to $200 a month in API credits on Max plans; the conditions are on its page and are not modelled."
   },
   "pendingChanges": [
     {
@@ -595,6 +596,47 @@
     {
       "id": "kimi-k3-1-pro-highspeed",
       "reason": "Listed at 4.00 input / 20.00 output / 0.20 cached. A faster-serving variant of Kimi K3.1 Pro at twice the price, the same idea as OpenAI's Fast mode, which is not modelled for any provider. K3.1 Pro is in the dataset."
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "max5",
+      "provider": "Anthropic",
+      "name": "Claude Max 5x",
+      "priceMonthly": 100,
+      "billing": "monthly",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifiedAt": "2026-10-28",
+      "note": "Described as 5x more usage than Pro. No token or message count is published."
+    },
+    {
+      "id": "max20",
+      "provider": "Anthropic",
+      "name": "Claude Max 20x",
+      "priceMonthly": 200,
+      "billing": "monthly",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifiedAt": "2026-10-28",
+      "note": "Described as 20x more usage than Pro. No token or message count is published."
+    },
+    {
+      "id": "pro-m",
+      "provider": "Anthropic",
+      "name": "Claude Pro, billed monthly",
+      "priceMonthly": 20,
+      "billing": "monthly",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifiedAt": "2026-10-28"
+    },
+    {
+      "id": "pro-y",
+      "provider": "Anthropic",
+      "name": "Claude Pro, billed annually",
+      "priceMonthly": 17,
+      "billing": "annual",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifiedAt": "2026-10-28",
+      "note": "$200 billed up front."
     }
   ]
 }

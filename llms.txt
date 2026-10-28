@@ -23,6 +23,8 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 - [Calculator](https://costperrun.com/): The tool itself. Set steps, tool-result size, retry rate and cache hit rate, then compare 31 models, see cost attribution by component, and read the per-step accumulation table. Runs entirely in the browser.
 - [Method and FAQ](https://costperrun.com/#method): Derivation of the formula, the worked example, the three levers ranked, and a plain statement of what the model does not cover.
 
+- [Subscription vs API](https://costperrun.com/subscription-vs-api/): Turns a Claude Pro or Max plan price into the number of agent runs the plan has to beat at API rates, using the same context-accumulation model, with a break-even by model. Plan usage limits are not published as token or message counts, so the page does not model the quota. Only Anthropic's plan prices are listed.
+
 ## Data
 
 - [models.json](https://costperrun.com/models.json): The canonical pricing dataset. Every rate carries the provider's own pricing URL and the date it was verified.
