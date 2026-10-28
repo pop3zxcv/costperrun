@@ -46,4 +46,5 @@ The three levers that reduce it, in order of effect: prompt caching, because cac
 - Claude Sonnet 5's $2/$10 was announced as introductory through 31 August 2026. Anthropic cancelled the scheduled increase to $3/$15 and $2/$10 is now the standard rate.
 - Gemini 4 Argon is on an introductory rate of $2/$10 through 30 November 2026 and doubles to $4/$20 on 1 December 2026.
 - Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates of $0.75/$3.75 through 31 December 2026 and double on 1 January 2027.
+- An optional panel compares the cost of one run with a person doing the same task, from minutes per task and a loaded hourly cost that the user enters. It reports the monthly saving and a break-even month against a one-time setup cost. It assumes every run completes the task and excludes review time and upkeep. No salary benchmark is built in.
 - No tracking, no signup, no analytics. The Content-Security-Policy is `default-src 'none'`, so the page cannot make outbound requests.

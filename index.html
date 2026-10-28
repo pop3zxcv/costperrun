@@ -59,6 +59,8 @@
      "acceptedAnswer":{"@type":"Answer","text":"Prompt caching is usually the largest single lever, because most of the bill is re-sent context and cache reads cost about 90% less. After that, reducing step count beats switching to a cheaper model, since step count is superlinear while price is linear. Trimming tool-result size comes third, because each tool result is re-sent by every subsequent step."}},
     {"@type":"Question","name":"How is this different from a normal LLM pricing calculator?",
      "acceptedAnswer":{"@type":"Answer","text":"Standard calculators price a single API request: input tokens times rate plus output tokens times rate. That is correct for a chatbot but understates agent costs by several times, because it ignores the context re-sent on every step of the loop."}},
+    {"@type":"Question","name":"Can I compare the agent's cost with a person doing the same task?",
+     "acceptedAnswer":{"@type":"Answer","text":"Yes. Open Compare with a person under Scale and enter the minutes one task takes, that person's fully loaded cost per hour and, if you want a break-even, the one-time setup cost. The tool puts minutes divided by 60 times the hourly cost next to the cost of one run, then multiplies the difference by your runs per day and 30 days for the monthly saving. Break-even is the setup cost divided by that saving. It assumes every run completes the task. Retries are priced in; the time a person spends checking the output, and upkeep, are not. The figures are the ones you type. There is no salary benchmark behind them."}},
     {"@type":"Question","name":"Does this calculator send my data anywhere?",
      "acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs in the browser. There is no account, no analytics on your inputs and no server request carrying your numbers. Shareable links encode the configuration in the URL itself."}}
   ]
@@ -356,6 +358,16 @@ input[type=number]:focus,select:focus{border-color:var(--accent);outline:none}
 .result .card-head{border-bottom-color:rgba(74,222,128,.14)}
 .model-tag{font:500 12.5px var(--mono);color:var(--accent);text-transform:none;letter-spacing:0}
 .figs{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:20px;align-items:end}
+.card-head .opt{font:500 10.5px var(--mono);letter-spacing:.08em;color:var(--dim-2);margin-left:10px;text-transform:uppercase}
+.hv-in>summary{cursor:pointer;list-style:none;border-bottom:0}
+.hv-in>summary::-webkit-details-marker{display:none}
+.hv-in>summary::after{content:"+";font:500 15px/1 var(--mono);color:var(--dim-2)}
+.hv-in[open]>summary::after{content:"\2212"}
+.hv-in>summary:hover::after{color:var(--txt)}
+.hv-in[open]>summary{border-bottom:1px solid var(--line)}
+.card[hidden]{display:none}
+.fig .v.win{color:var(--accent)}
+.fig .v.lose{color:var(--amber)}
 .fig .v{font:600 clamp(25px,2.4vw,31px)/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
 .fig .v.sm{font-size:clamp(15px,1.5vw,17px);color:var(--dim);letter-spacing:-.02em}
 .fig .l{font:500 10.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--dim-2);margin-top:11px}
@@ -669,6 +681,27 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
         </div>
       </div>
     </div>
+
+    <details class="card hv-in" id="hvDet">
+      <summary class="card-head"><h3>Compare with a person <span class="opt">optional</span></h3></summary>
+      <div class="card-body">
+        <div class="f">
+          <label for="HM">Minutes a person spends on one task</label>
+          <input type="number" id="HM" value="0" min="0" step="5" inputmode="numeric">
+          <span class="hint">Your own figure. Time them on a real task.</span>
+        </div>
+        <div class="f">
+          <label for="HR">Their fully loaded cost per hour (USD)</label>
+          <input type="number" id="HR" value="0" min="0" step="5" inputmode="numeric">
+          <span class="hint">Salary plus benefits and overhead, divided by hours worked. Use your number, not a market average.</span>
+        </div>
+        <div class="f">
+          <label for="HS">One-time setup cost (USD)</label>
+          <input type="number" id="HS" value="0" min="0" step="500" inputmode="numeric">
+          <span class="hint">Building and integrating the agent. Used only for the break-even.</span>
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- ---------- RESULTS ---------- -->
@@ -686,6 +719,14 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
           <div class="fig"><div class="v sm" id="perYr">···</div><div class="l">Per year</div></div>
         </div>
         <div class="insight" id="insight"></div>
+      </div>
+    </div>
+
+    <div class="card" id="hvCard">
+      <div class="card-head"><h3>Agent versus a person</h3></div>
+      <div class="card-body">
+        <div class="figs hv" id="hvFigs" aria-live="polite"></div>
+        <div class="note" id="hvNote"></div>
       </div>
     </div>
 
@@ -788,6 +829,11 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <details>
         <summary>How is this different from a normal LLM pricing calculator?</summary>
         <div class="a">Standard calculators price a single API request: input tokens times rate, plus output tokens times rate. That is correct for a chatbot, and it understates agent costs by several times, because it ignores the context re-sent on every step of the loop.</div>
+      </details>
+
+      <details>
+        <summary>Can I compare the agent's cost with a person doing the same task?</summary>
+        <div class="a">Yes. Open Compare with a person under Scale and enter the minutes one task takes, that person's fully loaded cost per hour and, if you want a break-even, the one-time setup cost. The tool puts minutes divided by 60 times the hourly cost next to the cost of one run, then multiplies the difference by your runs per day and 30 days for the monthly saving. Break-even is the setup cost divided by that saving. It assumes every run completes the task. Retries are priced in; the time a person spends checking the output, and upkeep, are not. The figures are the ones you type. There is no salary benchmark behind them.</div>
       </details>
 
       <details>
@@ -928,10 +974,11 @@ const PRESETS={
  "Simple tool-use" :{S:1000,U:400, N:5, O:300, T:800, R:5, C:0}
 };
 
-const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,m:"sonnet-5-5"};
+const DEFAULTS={S:2000,U:500,N:12,O:400,T:1200,R:10,C:0,D:1000,HM:0,HR:0,HS:0,m:"sonnet-5-5"};
 
 const $=id=>document.getElementById(id);
 const IN=["S","U","N","O","T","R","C"];
+const HX=["HM","HR","HS"];
 const money=v=> v>=100? "$"+v.toLocaleString(undefined,{maximumFractionDigits:0})
               : v>=1 ? "$"+v.toFixed(2)
               : v>=0.01? "$"+v.toFixed(3) : "$"+v.toFixed(5);
@@ -970,6 +1017,7 @@ function writeURL(){
   const q=new URLSearchParams();
   IN.forEach(k=>{ if(+$(k).value!==DEFAULTS[k]) q.set(k.toLowerCase(),$(k).value); });
   if(+$("D").value!==DEFAULTS.D) q.set("d",$("D").value);
+  HX.forEach(k=>{ if(+$(k).value!==DEFAULTS[k]) q.set(k.toLowerCase(),$(k).value); });
   const mid=MODELS[+$("M").value].id;
   if(mid!==DEFAULTS.m) q.set("m",mid);
   const s=q.toString();
@@ -983,9 +1031,27 @@ function readURL(){
     if(v!==null && !isNaN(+v)){ $(k).value=+v; any=true; }
   });
   const d=q.get("d"); if(d!==null && !isNaN(+d)){ $("D").value=+d; any=true; }
+  HX.forEach(k=>{ const v=q.get(k.toLowerCase()); if(v!==null && !isNaN(+v) && +v>=0){ $(k).value=+v; any=true; } });
   const m=q.get("m");
   if(m){ const idx=MODELS.findIndex(x=>x.id===m); if(idx>=0){ $("M").value=idx; any=true; } }
   return any;
+}
+
+/* agent versus a person: all figures come from the user's own inputs */
+function versus(agentRun,D){
+  const mins=+$("HM").value||0, rate=+$("HR").value||0, setup=+$("HS").value||0;
+  const person=mins/60*rate;
+  if(!(person>0)) return null;
+  const saveRun=person-agentRun, saveMo=saveRun*D*30;
+  let be=null;
+  if(saveMo>0) be= setup>0? setup/saveMo : 0;
+  return {mins,rate,setup,person,saveRun,saveMo,be,pct:agentRun/person*100};
+}
+function beText(be){
+  if(be===null) return "never";
+  if(be===0) return "from day 1";
+  if(be<1) return Math.max(1,Math.round(be*30))+" days";
+  return be.toFixed(1)+" months";
 }
 
 function markdown(){
@@ -1011,6 +1077,8 @@ Billed input: ${num(Math.round(r.tokTotalIn))} tokens vs ${num(raw)} raw convers
 Cheapest models for this workload:
 ${rows.map((x,i)=>`${i+1}. ${x.x.n}: ${money(x.t)}/run`).join("\n")}
 
+${(()=>{const v=versus(r.total,D); return v? `
+Against a person: ${v.mins} min at ${money(v.rate)}/hour is ${money(v.person)} per task, so the agent costs ${v.pct<1? "under 1":Math.round(v.pct)}% as much per task. `+(v.saveMo>0? `Saves ${money(v.saveMo)}/month; break-even ${v.setup>0? "after "+beText(v.be) : "from day 1"}.` : `No saving at these inputs.`)+"\n" : ""})()}
 _Estimated with ${location.origin||"https://costperrun.com"}${location.pathname}${location.search}_`;
 }
 
@@ -1055,6 +1123,22 @@ function render(){
   $("mVal").textContent=money(r.total);
   $("mModel").textContent=m.n;
   $("mMo").textContent=money(r.total*D*30);
+
+  const v=versus(r.total,D);
+  $("hvCard").hidden=!v;
+  if(v){
+    const win=v.saveMo>0;
+    $("hvFigs").innerHTML=
+      `<div class="fig"><div class="v ${win?"win":"lose"}">${win? money(v.saveMo) : "No saving"}</div><div class="l">${win? "Saved per month":"At these inputs"}</div></div>`+
+      `<div class="fig"><div class="v sm">${money(v.person)}</div><div class="l">Person, per task</div></div>`+
+      `<div class="fig"><div class="v sm">${money(r.total)}</div><div class="l">Agent, per run</div></div>`+
+      `<div class="fig"><div class="v sm">${win? beText(v.be) : "never"}</div><div class="l">Break-even</div></div>`;
+    $("hvNote").innerHTML=
+      (win? `The agent costs <code>${v.pct<1?"under 1":Math.round(v.pct)}%</code> of a person per task. `
+          : `The agent costs <code>${Math.round(v.pct)}%</code> of a person per task, so there is nothing to pay back. `)+
+      `Saving is per task times <code>${num(D)}</code> tasks a day over 30 days. `+
+      `It assumes every run completes the task. Retries are priced in, but the time a person spends checking the output is not, and neither is upkeep.`;
+  }
 
   const tot=r.cSys+r.cIn+r.cCtx+r.cOut||1;
   const pc=v=>Math.round(v/tot*100);
@@ -1155,7 +1239,7 @@ document.querySelectorAll(".preset").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); render();
 });
-[...IN,"D","M"].forEach(k=>$(k).addEventListener("input",()=>{
+[...IN,...HX,"D","M"].forEach(k=>$(k).addEventListener("input",()=>{
   if(IN.includes(k)) document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();
 }));
@@ -1172,6 +1256,8 @@ $("bMd").onclick=()=>copy(markdown(),$("bMd"),"Markdown copied");
 $("bReset").onclick=()=>{
   IN.forEach(k=>$(k).value=DEFAULTS[k]);
   $("D").value=DEFAULTS.D;
+  HX.forEach(k=>$(k).value=DEFAULTS[k]);
+  $("hvDet").open=false;
   $("M").value=MODELS.findIndex(x=>x.id===DEFAULTS.m);
   document.querySelectorAll(".preset").forEach(x=>x.classList.remove("on"));
   render();
@@ -1181,7 +1267,7 @@ addEventListener("scroll",()=>{
   $("nav").classList.toggle("stuck",scrollY>8);
 },{passive:true});
 
-readURL();
+if(readURL() && HX.some(k=>+$(k).value>0)) $("hvDet").open=true;
 render();
 </script>
 </body>
