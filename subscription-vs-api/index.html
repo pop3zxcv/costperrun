@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Subscription vs API Cost for AI Agents | How many runs a plan must beat</title>
-<meta name="description" content="Turn a Claude Pro or Max plan price into the number of agent runs it has to beat at API rates. Includes the cost of re-sent context, retries and caching. Free, no signup.">
+<meta name="description" content="Turn a Claude Pro, Max or Ultra plan price into the number of agent runs it has to beat at API rates. Includes the cost of re-sent context, retries and caching. Free, no signup.">
 <link rel="canonical" href="https://costperrun.com/subscription-vs-api/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#191919">
@@ -31,7 +31,7 @@
   "url":"https://costperrun.com/subscription-vs-api/",
   "applicationCategory":"DeveloperApplication",
   "operatingSystem":"Any (web browser)",
-  "description":"Converts a Claude Pro or Max plan price into the number of agent runs it has to beat at API rates, using the same context-accumulation model as the Cost Per Run calculator.",
+  "description":"Converts a Claude Pro, Max or Ultra plan price into the number of agent runs it has to beat at API rates, using the same context-accumulation model as the Cost Per Run calculator.",
   "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
 }
 </script>
@@ -40,12 +40,14 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"How many agent runs does a Claude Max plan have to beat?",
-     "acceptedAnswer":{"@type":"Answer","text":"Divide the plan price by the cost of one run at API rates. On the default workload (12 steps, Claude Sonnet 5.5, 10% retries, no caching) a run costs $0.351, so Max 5x at $100 a month equals 285 runs a month, about 9.5 a day, and Max 20x at $200 equals 570 runs, about 19 a day. With a 90% cache hit rate a run costs $0.096 and the same $100 buys about 1,040 runs, or 35 a day. If your plan lets you run more than that, the plan is the cheaper route."}},
+    {"@type":"Question","name":"How many agent runs does a Claude Max or Ultra plan have to beat?",
+     "acceptedAnswer":{"@type":"Answer","text":"Divide the plan price by the cost of one run at API rates. On the default workload (12 steps, Claude Sonnet 5.5, 10% retries, no caching) a run costs $0.351, so Max at $100 a month equals 285 runs a month, about 9.5 a day, and Ultra at $200 equals 570 runs, about 19 a day. With a 90% cache hit rate a run costs $0.096 and the same $100 buys about 1,040 runs, or 35 a day. If your plan lets you run more than that, the plan is the cheaper route."}},
     {"@type":"Question","name":"Why can't this tell me whether my plan covers my usage?",
-     "acceptedAnswer":{"@type":"Answer","text":"Plans publish their usage limits only in relative terms. Anthropic describes Max as 5x or 20x more usage than Pro and gives no token or message count, and the limits are shared between chat and Claude Code. With no published quota there is nothing to compare against. The page gives the number of runs your plan price buys at API rates and leaves the comparison with your own usage meter to you."}},
+     "acceptedAnswer":{"@type":"Answer","text":"Anthropic states plan limits only relative to Pro. Max is 5 times Pro's usage every five hours and every week, and Ultra is 10 times Pro's weekly usage with no five-hour limit for verified accounts. Pro's own usage has no published number, there is no token or message count, and the limits are shared between chat and Claude Code. With no published quota there is nothing to compare against. The page gives the number of runs your plan price buys at API rates and leaves the comparison with your own usage meter to you."}},
+    {"@type":"Question","name":"Does the API credit that comes with Max and Ultra change the answer?",
+     "acceptedAnswer":{"@type":"Answer","text":"Max includes $100 a month of API credit and Ultra $200. It works for the Messages API, the Batch API, Managed Agents and the Agent SDK, but not for interactive Claude Code or the Claude apps. It expires at the end of each billing cycle and does not roll over. For work you run through the API it only refunds the plan price: your total is the larger of the plan price and your API spend, so the plan cannot be cheaper than the API for that work. The plan wins only where its Claude Code or chat allowance replaces API spend."}},
     {"@type":"Question","name":"Which plans are listed?",
-     "acceptedAnswer":{"@type":"Answer","text":"Claude Pro and Max, with prices read from Anthropic's pricing page on 28 October 2026. ChatGPT's pricing page shows prices in the visitor's local currency, and no US dollar figure could be confirmed from a primary page, so other plans go under Another plan, where you type the price. Taxes are not included."}}
+     "acceptedAnswer":{"@type":"Answer","text":"Claude Pro ($20 a month, or $17 a month billed annually), Max ($100) and Ultra ($200), with prices read from Anthropic's pricing page on 31 October 2026. Ultra was called Max 20x before Anthropic renamed it. ChatGPT's pricing page shows prices in the visitor's local currency, and no US dollar figure could be confirmed from a primary page, so other plans go under Another plan, where you type the price. Taxes are not included."}}
   ]
 }
 </script>
@@ -612,7 +614,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
       <a class="btn" href="/">Price one run first</a>
     </div>
-    <p class="microcopy">Claude Pro and Max prices verified · No signup · Nothing leaves your browser</p>
+    <p class="microcopy">Claude Pro, Max and Ultra prices verified · No signup · Nothing leaves your browser</p>
   </div>
 </section>
 
@@ -678,6 +680,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
         </div>
         <div class="twobar" id="twobar"></div>
         <div class="verdict" id="verdict"></div>
+        <div class="note" id="creditNote" hidden></div>
       </div>
     </div>
 
@@ -699,10 +702,10 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
     <div class="card">
       <div class="card-head"><h3>What this cannot tell you</h3></div>
       <div class="card-body cannot">
-        Whether the plan lets you run that many runs. Anthropic describes Max as "5x or 20x more usage than Pro" and publishes no token or message count, and the limits are shared between chat and Claude Code. Compare the break-even above with your own usage meter.
+        Whether the plan lets you run that many runs. Anthropic states limits only relative to Pro: Max is 5x Pro's usage every five hours and every week, and Ultra is 10x Pro's weekly usage with no five-hour limit for verified accounts. It publishes no token or message count, and the limits are shared between chat and Claude Code. Compare the break-even above with your own usage meter.
         <ul>
           <li>A plan also includes chat, projects and other features that have no API price.</li>
-          <li>Anthropic lists $100 to $200 a month in API credits on Max plans. Its conditions are on Anthropic's page and are not modelled here.</li>
+          <li>Max and Ultra include $100 and $200 a month of API credit, for API runs only. It expires each billing cycle, so for API work your total with the plan is the larger of the plan price and your API spend.</li>
           <li>The break-even assumes every run completes the task and prices retries as set above.</li>
         </ul>
         <p class="src" id="srcLine"></p>
@@ -720,20 +723,24 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <h2 style="margin-bottom:24px">Questions</h2>
 
       <details open>
-        <summary>How many agent runs does a Claude Max plan have to beat?</summary>
-        <div class="a">Divide the plan price by the cost of one run at API rates. On the default workload (12 steps, Claude Sonnet 5.5, 10% retries, no caching) a run costs $0.351, so Max 5x at $100 a month equals 285 runs a month, about 9.5 a day, and Max 20x at $200 equals 570 runs, about 19 a day. With a 90% cache hit rate a run costs $0.096 and the same $100 buys about 1,040 runs, or 35 a day. If your plan lets you run more than that, the plan is the cheaper route.</div>
+        <summary>How many agent runs does a Claude Max or Ultra plan have to beat?</summary>
+        <div class="a">Divide the plan price by the cost of one run at API rates. On the default workload (12 steps, Claude Sonnet 5.5, 10% retries, no caching) a run costs $0.351, so Max at $100 a month equals 285 runs a month, about 9.5 a day, and Ultra at $200 equals 570 runs, about 19 a day. With a 90% cache hit rate a run costs $0.096 and the same $100 buys about 1,040 runs, or 35 a day. If your plan lets you run more than that, the plan is the cheaper route.</div>
       </details>
 
       <details>
         <summary>Why can't this tell me whether my plan covers my usage?</summary>
-        <div class="a">Plans publish their usage limits only in relative terms. Anthropic describes Max as 5x or 20x more usage than Pro and gives no token or message count, and the limits are shared between chat and Claude Code. With no published quota there is nothing to compare against. The page gives the number of runs your plan price buys at API rates and leaves the comparison with your own usage meter to you.</div>
+        <div class="a">Anthropic states plan limits only relative to Pro. Max is 5 times Pro's usage every five hours and every week, and Ultra is 10 times Pro's weekly usage with no five-hour limit for verified accounts. Pro's own usage has no published number, there is no token or message count, and the limits are shared between chat and Claude Code. With no published quota there is nothing to compare against. The page gives the number of runs your plan price buys at API rates and leaves the comparison with your own usage meter to you.</div>
+      </details>
+
+      <details>
+        <summary>Does the API credit that comes with Max and Ultra change the answer?</summary>
+        <div class="a">Max includes $100 a month of API credit and Ultra $200. It works for the Messages API, the Batch API, Managed Agents and the Agent SDK, but not for interactive Claude Code or the Claude apps. It expires at the end of each billing cycle and does not roll over. For work you run through the API it only refunds the plan price: your total is the larger of the plan price and your API spend, so the plan cannot be cheaper than the API for that work. The plan wins only where its Claude Code or chat allowance replaces API spend.</div>
       </details>
 
       <details>
         <summary>Which plans are listed?</summary>
-        <div class="a">Claude Pro and Max, with prices read from Anthropic's pricing page on 28 October 2026. ChatGPT's pricing page shows prices in the visitor's local currency, and no US dollar figure could be confirmed from a primary page, so other plans go under Another plan, where you type the price. Taxes are not included.</div>
+        <div class="a">Claude Pro ($20 a month, or $17 a month billed annually), Max ($100) and Ultra ($200), with prices read from Anthropic's pricing page on 31 October 2026. Ultra was called Max 20x before Anthropic renamed it. ChatGPT's pricing page shows prices in the visitor's local currency, and no US dollar figure could be confirmed from a primary page, so other plans go under Another plan, where you type the price. Taxes are not included.</div>
       </details>
-
     </div>
   </div>
 </section>
@@ -766,13 +773,14 @@ if(typeof MODELS==="undefined"){
 
 /* Subscription prices, mirrored from models.json subscriptions. Read from Anthropic's pricing page. */
 const PLANS=[
- {id:"max5",  n:"Claude Max 5x",              price:100},
- {id:"max20", n:"Claude Max 20x",             price:200},
- {id:"pro-m", n:"Claude Pro, billed monthly", price:20},
- {id:"pro-y", n:"Claude Pro, billed annually", price:17, note:"$200 billed up front"},
- {id:"custom",n:"Another plan",               price:null}
+ {id:"max",   n:"Claude Max",                 price:100, credit:100, note:"5x Pro usage every 5 hours and every week"},
+ {id:"ultra", n:"Claude Ultra",               price:200, credit:200, note:"10x Pro usage every week, no 5-hour limit for verified accounts. Formerly Max 20x"},
+ {id:"pro-m", n:"Claude Pro, billed monthly", price:20,  credit:0},
+ {id:"pro-y", n:"Claude Pro, billed annually", price:17, credit:0, note:"$200 billed up front"},
+ {id:"custom",n:"Another plan",               price:null, credit:0}
 ];
-const PLAN_SRC="https://claude.com/pricing", PLAN_VERIFIED="28 October 2026";
+const PLAN_ALIAS={max5:"max",max20:"ultra"};   /* links made before Anthropic renamed the plans */
+const PLAN_SRC="https://claude.com/pricing", PLAN_VERIFIED="31 October 2026", CREDIT_SRC="https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans";
 
 const FIELDS=[
  {k:"S",label:"System prompt and tool schemas",min:0,max:30000,step:250,v:2000},
@@ -783,7 +791,7 @@ const FIELDS=[
  {k:"R",label:"Retry or failure rate",min:0,max:100,step:5,v:10,pct:true},
  {k:"C",label:"Prompt cache hit rate",min:0,max:95,step:5,v:0,pct:true}
 ];
-const DEFAULTS={D:10,m:"sonnet-5-5",plan:"max5",pp:100};
+const DEFAULTS={D:10,m:"sonnet-5-5",plan:"max",pp:100};
 const $=id=>document.getElementById(id);
 const money=v=> v>=100? "$"+v.toLocaleString(undefined,{maximumFractionDigits:0})
               : v>=1 ? "$"+v.toFixed(2)
@@ -820,7 +828,7 @@ function readURL(){
   FIELDS.forEach(f=>{ const v=q.get(f.k.toLowerCase()); if(v!==null && !isNaN(+v)) $(f.k).value=+v; });
   const d=q.get("d"); if(d!==null && !isNaN(+d)) $("D").value=+d;
   const m=q.get("m"); if(m){ const i=MODELS.findIndex(x=>x.id===m); if(i>=0) $("M").value=i; }
-  const pl=q.get("plan"), i=PLANS.findIndex(x=>x.id===pl);
+  const pl0=q.get("plan"), pl=PLAN_ALIAS[pl0]||pl0, i=PLANS.findIndex(x=>x.id===pl);
   if(i>=0){ $("PL").value=i; $("PP").value=PLANS[i].price!==null? PLANS[i].price : (+q.get("pp")||0); }
   else $("PP").value=PLANS[0].price;
 }
@@ -830,7 +838,7 @@ function render(){
   FIELDS.forEach(f=>{ paintRange($(f.k)); $("l"+f.k).textContent=num(+$(f.k).value)+(f.pct?"%":""); });
   $("plSrc").innerHTML= pl.id==="custom"? "Enter the price from the plan's own page." :
     `${pl.note? pl.note+". " : ""}Read from <a href="${PLAN_SRC}" rel="noopener noreferrer" target="_blank" style="color:var(--dim)">Anthropic's pricing page</a> on ${PLAN_VERIFIED}.`;
-  $("srcLine").innerHTML=`Plan prices: <a href="${PLAN_SRC}" rel="noopener noreferrer" target="_blank">claude.com/pricing</a>, read on ${PLAN_VERIFIED}. Model rates: see the main calculator.`;
+  $("srcLine").innerHTML=`Plan prices: <a href="${PLAN_SRC}" rel="noopener noreferrer" target="_blank">claude.com/pricing</a>, read on ${PLAN_VERIFIED}. API credit terms: <a href="${CREDIT_SRC}" rel="noopener noreferrer" target="_blank">Anthropic help center</a>. Model rates: see the main calculator.`;
 
   const cost=costPerRun(m,p), apiMo=cost*D*30;
   const beMo=cost>0? plan/cost : Infinity, beDay=beMo/30;
@@ -850,6 +858,12 @@ function render(){
   else if(apiMo>plan) msg=`At <b>${num(D)} runs a day</b> the API would cost ${money(apiMo)} a month, ${(apiMo/plan).toFixed(1)}× the ${money(plan)} plan. The plan is the cheaper route only if its usage limits let you do that much work. The plan price buys <b>${runs(beMo)} runs a month</b> at API rates, ${runs(beDay)} a day. Compare that with your usage meter.`;
   else msg=`At <b>${num(D)} runs a day</b> the API costs ${money(apiMo)} a month, ${Math.round(apiMo/plan*100)}% of the ${money(plan)} plan, so the API is cheaper at this volume. The plan starts to win above <b>${runs(beDay)} runs a day</b>, if its limits allow it.`;
   $("verdict").innerHTML=msg;
+  const cn=$("creditNote");
+  if(pl.credit>0 && plan>0){
+    const tot=Math.max(plan,apiMo);
+    cn.hidden=false;
+    cn.innerHTML=`Included API credit: <code>${money(pl.credit)}</code> a month, for API runs only. If every run goes through the API you would pay <code>${money(tot)}</code> a month with this plan, the larger of the plan price and your API spend, against <code>${money(apiMo)}</code> on the API alone. The credit cannot make the plan cheaper for API runs. The plan wins only where its Claude Code or chat allowance replaces API spend.`;
+  } else cn.hidden=true;
 
   const rows=MODELS.map(x=>({x,t:costPerRun(x,p),ok:fits(x,p)})).sort((a,b)=>(b.ok-a.ok)||(a.t-b.t));
   $("bem").innerHTML=rows.map(r=>`<tr class="${r.ok?"":"nofit"}${r.x.id===m.id?" sel":""}">

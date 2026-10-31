@@ -10,7 +10,7 @@
     "longContext": "Four providers raise rates above a context threshold, and this dataset lists the BASE tier in each case. Claude Haiku 5.5 changes at 100K prompt tokens: 0.10/0.01/0.50 -> 0.50/0.05/2.50 for the whole request, cache reads counted toward the 100K. OpenAI applies 2x input and cache rates and 1.5x output to the whole request once it exceeds 272K input tokens: Astra 10/50 -> 20/75, GPT-6.1 Sol 2/10 -> 4/15, GPT-6 Luna 0.10/0.50 -> 0.20/0.75, GPT-5.6 Sol 4/20 -> 8/30, Terra 2/12 -> 4/18, Luna 0.20/1.20 -> 0.40/1.80. Gemini 3.1 Pro 2/12 -> 4/18 and Gemini 2.5 Pro 1.25/10 -> 2.50/15 above 200K. Grok doubles all rates at >=200K. The other Claude models carry no long-context tier.",
     "peakOffPeak": "DeepSeek bills peak and off-peak rates. Off-peak is half of peak. Peak is 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, excluding Chinese public holidays. All other hours are off-peak. This dataset lists PEAK.",
     "promotionalRates": "Gemini 4 Argon is on an introductory rate through 2026-11-30 and doubles on 2026-12-01. Gemini 3.6 Flash, 3.7 Flash and 3.8 Flash are on promotional rates through 2026-12-31 and double on 2027-01-01. GPT-5.6 Sol's 4.00/20.00 is also promotional, stated as available at least through 2026-11-21, with no successor rate published. All are listed at the rate in force today. See pendingChanges. A scheduled increase is not a certainty: Claude Sonnet 5's 2.00/10.00 was announced as introductory through 2026-08-31 and the increase was cancelled.",
-    "subscriptions": "Plan prices for the subscription-vs-api page. Only Anthropic's are listed: ChatGPT's pricing page showed prices in the visitor's local currency (AED) on 2026-10-28 and no US dollar figure could be confirmed from a primary page. Google AI plan pages were localised the same way. No provider publishes plan usage limits as a token or message count, so the page converts the plan price into runs at API rates and does not model the quota. Anthropic lists $100 to $200 a month in API credits on Max plans; the conditions are on its page and are not modelled."
+    "subscriptions": "Plan prices for the subscription-vs-api page, read from claude.com/pricing on 2026-10-31. Anthropic renamed Max 20x to Ultra between 28 and 31 October (same $200, now 10x Pro weekly usage and no 5-hour limit for verified accounts). Only Anthropic's plans are listed: ChatGPT's pricing page showed local currency (AED) and no US dollar figure could be confirmed from a primary page; Google AI plan pages were localised the same way. No provider publishes plan limits as a token or message count: Anthropic states Max as 5x Pro and Ultra as 10x Pro weekly, and Pro has no number. apiCreditMonthly is the monthly Claude Platform credit on Max and Ultra (support article 17154008): it covers the Messages and Batch APIs, Managed Agents and the Agent SDK, not interactive Claude Code or the Claude apps, expires each billing cycle and does not roll over. For API runs it only refunds the plan price, so the total is the larger of the plan price and API spend."
   },
   "pendingChanges": [
     {
@@ -600,24 +600,28 @@
   ],
   "subscriptions": [
     {
-      "id": "max5",
+      "id": "max",
       "provider": "Anthropic",
-      "name": "Claude Max 5x",
+      "name": "Claude Max",
       "priceMonthly": 100,
       "billing": "monthly",
+      "apiCreditMonthly": 100,
       "sourceUrl": "https://claude.com/pricing",
-      "verifiedAt": "2026-10-28",
-      "note": "Described as 5x more usage than Pro. No token or message count is published."
+      "creditsUrl": "https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans",
+      "verifiedAt": "2026-10-31",
+      "note": "5x Pro usage every 5 hours and every week. No token or message count is published."
     },
     {
-      "id": "max20",
+      "id": "ultra",
       "provider": "Anthropic",
-      "name": "Claude Max 20x",
+      "name": "Claude Ultra",
       "priceMonthly": 200,
       "billing": "monthly",
+      "apiCreditMonthly": 200,
       "sourceUrl": "https://claude.com/pricing",
-      "verifiedAt": "2026-10-28",
-      "note": "Described as 20x more usage than Pro. No token or message count is published."
+      "creditsUrl": "https://support.claude.com/en/articles/17154008-monthly-api-credits-for-max-ultra-and-team-plans",
+      "verifiedAt": "2026-10-31",
+      "note": "10x Pro usage every week, no 5-hour limit for verified accounts. Formerly Max 20x, renamed with no price change."
     },
     {
       "id": "pro-m",
@@ -625,8 +629,9 @@
       "name": "Claude Pro, billed monthly",
       "priceMonthly": 20,
       "billing": "monthly",
+      "apiCreditMonthly": 0,
       "sourceUrl": "https://claude.com/pricing",
-      "verifiedAt": "2026-10-28"
+      "verifiedAt": "2026-10-31"
     },
     {
       "id": "pro-y",
@@ -634,8 +639,9 @@
       "name": "Claude Pro, billed annually",
       "priceMonthly": 17,
       "billing": "annual",
+      "apiCreditMonthly": 0,
       "sourceUrl": "https://claude.com/pricing",
-      "verifiedAt": "2026-10-28",
+      "verifiedAt": "2026-10-31",
       "note": "$200 billed up front."
     }
   ]
