@@ -64,7 +64,7 @@
     {"@type":"Question","name":"How does the success rate change the cost?",
      "acceptedAnswer":{"@type":"Answer","text":"The Runs that complete the task slider sets the share of runs that finish the job correctly. A failed run is still billed, so cost per completed task is the cost of one run divided by the success rate. At the default workload a run costs $0.351 on Claude Sonnet 5.5; at 80% success each completed task costs $0.439. Monthly spend does not change, because you pay for every run. It is separate from the retry rate, which covers failed tool calls inside a run. The comparison table shows cost per run for every model, since success rates differ by model and the tool has no data for them."}},
     {"@type":"Question","name":"What do the batch and cache-write options change?",
-     "acceptedAnswer":{"@type":"Answer","text":"Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them."}},
+     "acceptedAnswer":{"@type":"Answer","text":"Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 40% at Moonshot, 20% at xAI. DeepSeek and Meta have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them."}},
     {"@type":"Question","name":"Does this calculator send my data anywhere?",
      "acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs in the browser. There is no account, no analytics on your inputs and no server request carrying your numbers. Shareable links encode the configuration in the URL itself."}}
   ]
@@ -202,8 +202,10 @@ main,header,footer{position:relative;z-index:1}
 .btn-ok{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .btn-sm{height:30px;padding:0 11px;font-size:12.5px}
 
-@media(max-width:820px){
-  .navlinks,.nav .stamp{display:none}
+.navlinks a{white-space:nowrap}
+@media(max-width:1060px){.nav .stamp{display:none}}
+@media(max-width:900px){
+  .navlinks{display:none}
   .nav .wrap{gap:12px}
 }
 
@@ -583,7 +585,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <a href="/cost-per-success/">Cost per success</a>
     </nav>
     <div class="right">
-      <span class="stamp"><span class="dot"></span>Prices verified Oct 2026</span>
+      <span class="stamp"><span class="dot"></span>Prices verified Nov 2026</span>
       <a class="btn btn-primary" href="#calculator">Run the numbers</a>
     </div>
   </div>
@@ -705,7 +707,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
         <label class="chk" for="B">
           <input type="checkbox" id="B">
           <span>Batch API
-            <span class="hint">Cuts the rate where the provider sells one: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have none and stay at the standard rate. Results arrive within 24 hours and each agent step waits on the one before, so this fits offline runs, not live agents.</span>
+            <span class="hint">Cuts the rate where the provider sells one: 50% at OpenAI, Anthropic and Google, 40% at Moonshot, 20% at xAI. DeepSeek and Meta have none and stay at the standard rate. Results arrive within 24 hours and each agent step waits on the one before, so this fits offline runs, not live agents.</span>
           </span>
         </label>
         <label class="chk" for="W">
@@ -880,7 +882,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <details>
         <summary>What do the batch and cache-write options change?</summary>
-        <div class="a">Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 20% at xAI. DeepSeek, Meta and Moonshot's K3 series have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them.</div>
+        <div class="a">Batch API applies the discount a provider publishes: 50% at OpenAI, Anthropic and Google, 40% at Moonshot, 20% at xAI. DeepSeek and Meta have no batch API and keep the standard rate, and a few Gemini models keep the standard cache price. Batch results arrive within 24 hours and every agent step needs the previous result, so it suits offline runs rather than live agents. Bill cache writes charges 1.25 times the input rate for tokens that miss the cache, as Anthropic and OpenAI do. At a 0% hit rate that is 25% more than not caching, and it shrinks as the hit rate rises. Both options are off by default, so the headline figures do not include them.</div>
       </details>
 
       <details>
@@ -890,7 +892,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
 
       <details>
         <summary>Where do the prices come from?</summary>
-        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 28 October 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
+        <div class="a">Each rate is taken from the provider's own public pricing page and carries a verification date. Prices were last checked on 6 November 2026. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026, but Anthropic cancelled the increase to $3 / $15 and $2 / $10 is now the standard rate. Confirm against the official page before you commit budget.</div>
       </details>
     </div>
   </div>
@@ -911,7 +913,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;background:var(--bg-
       <p>Free. No signup. No tracking. No data leaves your browser.</p>
       <a class="report" href="https://github.com/pop3zxcv/costperrun/issues" rel="noopener noreferrer" target="_blank"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>Report a stale price</a>
     </div>
-    <p>Model prices checked against each provider's own pricing page on <b>28 October 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
+    <p>Model prices checked against each provider's own pricing page on <b>6 November 2026</b>. Open any row in the comparison table to see its rates, date and source. Always confirm against the official pricing page before committing budget. Claude Sonnet 5's $2 / $10 was announced as introductory through 31 August 2026; Anthropic cancelled the scheduled increase and it is now the standard rate. Cached-input rates are each provider's published cache-hit price, not an assumed discount. Most are 90% off input. The range runs from 75% off (Grok 4.6 and 4.7) to 98% off (DeepSeek V4.1 Flash), and the default model, Claude Sonnet 5.5, is 95% off.</p>
   </div>
 </footer>
 
@@ -928,14 +930,16 @@ if(typeof MODELS==="undefined"){
 }
 
 /* Promotional rates, mirrored from models.json (pendingChanges, and the GPT-5.6 Sol note).
-   end: last day of the promotion. next: published rate after it. atLeast: the provider only
-   says "at least through" this date and publishes no successor rate. */
+   end: last day of the promotion. next: published rate after it. atLeast: the provider publishes no
+   successor rate; until: the end date is firm ("available until"), otherwise it says "at least through".
+   routed: not a promotion but a deprecated model that is billed at another model's rates from end + 1. */
 const PROMO={
  "gemini-4-argon":{end:"2026-11-30",next:{i:4.00,c:0.20,o:20.00}},
  "gemini-3-8-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
  "gemini-3-7-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
  "gemini-3-6-fl" :{end:"2026-12-31",next:{i:1.50,c:0.15,o:7.50}},
- "gpt-5-6-sol"   :{end:"2026-11-21",atLeast:true}
+ "gemini-2-5-pro":{end:"2026-11-30",next:{i:0.75,c:0.075,o:3.75},routed:true},
+ "gpt-5-6-sol"   :{end:"2026-11-30",atLeast:true,until:true}
 };
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const dmy=iso=>{const [y,m,d]=iso.split("-").map(Number);return d+"\u00a0"+MON[m-1];};  /* no-break space: a date never splits across lines */
@@ -958,7 +962,7 @@ const SOURCES={
  "Moonshot" :"https://platform.kimi.ai/docs/pricing/chat",
  "DeepSeek" :"https://api-docs.deepseek.com/quick_start/pricing"
 };
-const VERIFIED="2026-10-28";
+const VERIFIED="2026-11-06";
 const rate=v=>{let t=v.toFixed(3).replace(/0$/,""); return "$"+t;};
 const OPEN=new Set();
 /* Long-context price tiers, mirrored from models.json notes.longContext. A request whose prompt
@@ -982,7 +986,7 @@ function limits(m,p){
   if(t) for(let i=1;i<=p.N;i++){ const x=promptAt(p,i); if(t.ge? x>=t.at : x>t.at){ tierStep=i; break; } }
   return {need, fits:need<=m.w, tierStep};
 }
-const promoLabel=id=>{const q=PROMO[id]; if(!q) return ""; return q.atLeast? "promo, at least to "+dmy(q.end) : "promo to "+dmy(q.end);};
+const promoLabel=id=>{const q=PROMO[id]; if(!q) return ""; return q.routed? "3.8 Flash rates from "+dmy(dayAfter(q.end)) : q.atLeast&&!q.until? "promo, at least to "+dmy(q.end) : "promo to "+dmy(q.end);};
 
 const PRESETS={
  "Coding agent"    :{S:6000,U:1500,N:25,O:800, T:3000,R:15,C:60},
@@ -1020,7 +1024,9 @@ const BATCH={
  "grok-4-5":[0.8,0.8,0.8],
  "grok-4-7":[0.8,0.8,0.8],
  "grok-4-6":[0.8,0.8,0.8],
- "grok-4-3":[0.8,0.8,0.8]
+ "grok-4-3":[0.8,0.8,0.8],
+ "kimi-k3-1-pro":[0.6,0.6,0.6],
+ "kimi-k3":[0.6,0.6,0.6]
 };
 /* Cache-write rate as a multiple of the input rate (Anthropic 5-minute, OpenAI 30-minute).
    Mirrored from models.json cacheWriteMultiple. Absent means no write charge. */
@@ -1289,8 +1295,9 @@ function render(){
   $("promoNote").innerHTML=flagNote+Object.values(groups).sort((a,b)=>a.q.end<b.q.end?-1:1).map(g=>{
     const names=g.xs.map(x=>x.n.replace(/ \(routed to [^)]*\)/,""));
     const who=names.length>1? names.slice(0,-1).join(", ")+" and "+names[names.length-1] : names[0];
-    if(g.q.atLeast) return `<li>${ICO_CLOCK}<span>${who}: the ${money(g.xs[0].i)} / ${money(g.xs[0].o)} rate is promotional, at least through ${dmy(g.q.end)}. No rate after it is published yet.</span></li>`;
+    if(g.q.atLeast) return `<li>${ICO_CLOCK}<span>${who}: the ${money(g.xs[0].i)} / ${money(g.xs[0].o)} rate is promotional, ${g.q.until? "available until" : "at least through"} ${dmy(g.q.end)}. No rate after it is published yet.</span></li>`;
     const after=calc({...g.xs[0],...g.q.next},p).total;
+    if(g.q.routed) return `<li>${ICO_CLOCK}<span>${who} ${names.length>1?"are":"is"} deprecated. From ${dmy(dayAfter(g.q.end))} Google bills ${names.length>1?"them":"it"} at Gemini 3.8 Flash rates: ${money(after)} a run on this workload, from ${money(calc(g.xs[0],p).total)}. Those rates are promotional to 31 Dec.</span></li>`;
     return `<li>${ICO_CLOCK}<span>${who} ${names.length>1?"rise":"rises"} to ${money(g.q.next.i)} / ${money(g.q.next.o)} on ${dmy(dayAfter(g.q.end))}: ${money(after)} a run on this workload, from ${money(calc(g.xs[0],p).total)}.</span></li>`;
   }).join("");
 

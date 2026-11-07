@@ -47,7 +47,7 @@ Stated plainly, because a cost tool that hides its limits is not worth using:
 
 - **Retries are a flat multiplier** on total cost. Real retries happen at a specific context depth, so failures late in a run are under-counted.
 - **Cache hit rate is one number**, not per-prefix.
-- **Batch API and cache writes** are options, off by default. Batch applies each provider's published discount (50% at OpenAI, Anthropic and Google, 20% at xAI; none at DeepSeek, Meta or Moonshot K3). Cache writes bill 1.25× the input rate for Anthropic and OpenAI at their shortest retention.
+- **Batch API and cache writes** are options, off by default. Batch applies each provider's published discount (50% at OpenAI, Anthropic and Google, 40% at Moonshot, 20% at xAI; none at DeepSeek or Meta). Cache writes bill 1.25× the input rate for Anthropic and OpenAI at their shortest retention.
 - **Long-context pricing tiers** are not modelled.
 - **Tokenizers differ by provider**, so cross-vendor token counts are approximate. They also differ inside Anthropic: Claude 4.7 and later (every Claude model here except Haiku 4.5) use a newer tokenizer producing about 30% more tokens for the same text than Haiku 4.5.
 
