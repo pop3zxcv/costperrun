@@ -3,6 +3,8 @@
    Hand-maintained mirror of models.json. `node check-math.js` fails if the two disagree, and if any page
    still carries its own copy. Loaded with a same-origin script tag, which the CSP allows as 'self'. */
 const MODELS=[
+ {id:"gpt-6-2-astra", p:"OpenAI",   n:"GPT-6.2 Astra",   i:8.00,  c:0.40,   o:40.00, w:1050000},
+ {id:"gpt-6-2-sol",   p:"OpenAI",   n:"GPT-6.2 Sol",     i:2.00,  c:0.10,   o:10.00, w:1050000},
  {id:"gpt-6-astra",   p:"OpenAI",   n:"GPT-6 Astra",     i:10.00, c:1.00,   o:50.00, w:1050000},
  {id:"gpt-6-1-sol",   p:"OpenAI",   n:"GPT-6.1 Sol",     i:2.00,  c:0.10,   o:10.00, w:1050000},
  {id:"gpt-6-1-terra", p:"OpenAI",   n:"GPT-6.1 Terra",   i:1.00,  c:0.05,   o:5.00, w:1050000},
@@ -19,6 +21,7 @@ const MODELS=[
  {id:"sonnet-5",      p:"Anthropic",n:"Claude Sonnet 5", i:2.00,  c:0.20,   o:10.00, w:1000000},
  {id:"haiku-5-5",     p:"Anthropic",n:"Claude Haiku 5.5",i:0.10,  c:0.01,   o:0.50, w:1000000},
  {id:"haiku-4-5",     p:"Anthropic",n:"Claude Haiku 4.5",i:1.00,  c:0.10,   o:5.00, w:200000},
+ {id:"gemini-4-neon",p:"Google",    n:"Gemini 4 Neon",   i:3.00,  c:0.15,   o:15.00, w:1048576},
  {id:"gemini-4-carbon",p:"Google",  n:"Gemini 4 Carbon", i:2.00,  c:0.10,   o:10.00, w:1048576},
  {id:"gemini-4-hydrogen",p:"Google",n:"Gemini 4 Hydrogen",i:1.50, c:0.075,  o:7.50, w:1048576},
  {id:"gemini-4-argon",p:"Google",   n:"Gemini 4 Argon",  i:2.00,  c:0.10,   o:10.00, w:1048576},
